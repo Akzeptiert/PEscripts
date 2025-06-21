@@ -1,0 +1,1291 @@
+{
+    "modules": [
+        {
+            "name": "aimbot",
+            "active": false,
+            "bind": {
+                "active": false,
+                "position": {
+                    "x": 0,
+                    "y": 0
+                }
+            },
+            "settings": [
+                {
+                    "type": "slider",
+                    "name": "smoothness",
+                    "value": 0.25
+                },
+                {
+                    "type": "slider",
+                    "name": "distance",
+                    "value": 5
+                },
+                {
+                    "type": "state",
+                    "name": "check for angle",
+                    "value": false
+                },
+                {
+                    "type": "slider",
+                    "name": "angle (horizontal)",
+                    "value": 180
+                },
+                {
+                    "type": "slider",
+                    "name": "angle (vertical)",
+                    "value": 90
+                }
+            ]
+        },
+        {
+            "name": "antibot",
+            "active": false,
+            "bind": {
+                "active": false,
+                "position": {
+                    "x": 0,
+                    "y": 0
+                }
+            },
+            "settings": [
+                {
+                    "type": "state",
+                    "name": "invisible check",
+                    "value": true
+                },
+                {
+                    "type": "state",
+                    "name": "hitbox check",
+                    "value": true
+                },
+                {
+                    "type": "state",
+                    "name": "name tag check",
+                    "value": true
+                },
+                {
+                    "type": "state",
+                    "name": "teleport check",
+                    "value": false
+                },
+                {
+                    "type": "slider",
+                    "name": "radius",
+                    "value": 15
+                },
+                {
+                    "type": "state",
+                    "name": "other check",
+                    "value": true
+                },
+                {
+                    "type": "state",
+                    "name": "extra check",
+                    "value": true
+                },
+                {
+                    "type": "state",
+                    "name": "print logs",
+                    "value": false
+                }
+            ]
+        },
+        {
+            "name": "antiknockback",
+            "active": false,
+            "bind": {
+                "active": false,
+                "position": {
+                    "x": 0,
+                    "y": 0
+                }
+            },
+            "settings": [
+                {
+                    "type": "slider",
+                    "name": "horizontal",
+                    "value": 0.5
+                },
+                {
+                    "type": "slider",
+                    "name": "vertical",
+                    "value": 0.5
+                }
+            ]
+        },
+        {
+            "name": "hitaim",
+            "active": false,
+            "bind": {
+                "active": false,
+                "position": {
+                    "x": 0,
+                    "y": 0
+                }
+            }
+        },
+        {
+            "name": "hitboxes",
+            "active": false,
+            "bind": {
+                "active": false,
+                "position": {
+                    "x": 0,
+                    "y": 0
+                }
+            },
+            "settings": [
+                {
+                    "type": "mode",
+                    "name": "mode",
+                    "value": "All"
+                },
+                {
+                    "type": "slider",
+                    "name": "distance",
+                    "value": 10
+                },
+                {
+                    "type": "slider",
+                    "name": "horizontal",
+                    "value": 10
+                },
+                {
+                    "type": "slider",
+                    "name": "vertical",
+                    "value": 10
+                },
+                {
+                    "type": "state",
+                    "name": "change shadows",
+                    "value": false
+                },
+                {
+                    "type": "slider",
+                    "name": "shadow radius",
+                    "value": 0.6
+                }
+            ]
+        },
+        {
+            "name": "infiniteaura",
+            "active": false,
+            "bind": {
+                "active": false,
+                "position": {
+                    "x": 0,
+                    "y": 0
+                }
+            },
+            "settings": [
+                {
+                    "type": "mode",
+                    "name": "mode",
+                    "value": "Multi"
+                },
+                {
+                    "type": "slider",
+                    "name": "cps",
+                    "value": 5
+                },
+                {
+                    "type": "slider",
+                    "name": "distance",
+                    "value": 10
+                }
+            ]
+        },
+        {
+            "name": "killaura",
+            "active": false,
+            "bind": {
+                "active": false,
+                "position": {
+                    "x": 476,
+                    "y": -196
+                }
+            },
+            "settings": [
+                {
+                    "type": "mode",
+                    "name": "mode",
+                    "value": "Multi"
+                },
+                {
+                    "type": "slider",
+                    "name": "cps",
+                    "value": 4
+                },
+                {
+                    "type": "slider",
+                    "name": "distance",
+                    "value": 10
+                },
+                {
+                    "type": "state",
+                    "name": "check for angle",
+                    "value": false
+                },
+                {
+                    "type": "slider",
+                    "name": "angle (horizontal)",
+                    "value": 180
+                },
+                {
+                    "type": "slider",
+                    "name": "angle (vertical)",
+                    "value": 90
+                }
+            ]
+        },
+        {
+            "name": "nohurtcam",
+            "active": false
+        },
+        {
+            "name": "reach",
+            "active": false,
+            "bind": {
+                "active": false,
+                "position": {
+                    "x": 0,
+                    "y": 0
+                }
+            }
+        },
+        {
+            "name": "targetspin",
+            "active": false,
+            "bind": {
+                "active": false,
+                "position": {
+                    "x": 0,
+                    "y": 0
+                }
+            },
+            "settings": [
+                {
+                    "type": "slider",
+                    "name": "distance",
+                    "value": 5
+                },
+                {
+                    "type": "slider",
+                    "name": "speed",
+                    "value": 0.2
+                },
+                {
+                    "type": "slider",
+                    "name": "height",
+                    "value": 2
+                },
+                {
+                    "type": "state",
+                    "name": "right",
+                    "value": true
+                }
+            ]
+        },
+        {
+            "name": "triggerbot",
+            "active": false,
+            "bind": {
+                "active": false,
+                "position": {
+                    "x": 0,
+                    "y": 0
+                }
+            },
+            "settings": [
+                {
+                    "type": "slider",
+                    "name": "cps",
+                    "value": 6
+                },
+                {
+                    "type": "state",
+                    "name": "random",
+                    "value": false
+                },
+                {
+                    "type": "slider",
+                    "name": "minimal cps",
+                    "value": 6
+                },
+                {
+                    "type": "slider",
+                    "name": "maximal cps",
+                    "value": 12
+                }
+            ]
+        },
+        {
+            "name": "airjump",
+            "active": false,
+            "bind": {
+                "active": false,
+                "position": {
+                    "x": 0,
+                    "y": 0
+                }
+            }
+        },
+        {
+            "name": "elevator",
+            "active": false,
+            "settings": [
+                {
+                    "type": "slider",
+                    "name": "distance",
+                    "value": 2.5
+                }
+            ],
+            "position": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        {
+            "name": "flight",
+            "active": false,
+            "bind": {
+                "active": false,
+                "position": {
+                    "x": 0,
+                    "y": 0
+                }
+            },
+            "settings": [
+                {
+                    "type": "mode",
+                    "name": "mode",
+                    "value": "Horizontal"
+                },
+                {
+                    "type": "slider",
+                    "name": "velocity",
+                    "value": 0.5
+                },
+                {
+                    "type": "state",
+                    "name": "disable when flag",
+                    "value": false
+                }
+            ]
+        },
+        {
+            "name": "glide",
+            "active": false,
+            "bind": {
+                "active": false,
+                "position": {
+                    "x": 0,
+                    "y": 0
+                }
+            },
+            "settings": [
+                {
+                    "type": "mode",
+                    "name": "mode",
+                    "value": "Horizontal"
+                },
+                {
+                    "type": "slider",
+                    "name": "velocity",
+                    "value": 0
+                }
+            ]
+        },
+        {
+            "name": "jetpack",
+            "active": false,
+            "bind": {
+                "active": false,
+                "position": {
+                    "x": 0,
+                    "y": 0
+                }
+            },
+            "settings": [
+                {
+                    "type": "state",
+                    "name": "inertia",
+                    "value": true
+                },
+                {
+                    "type": "mode",
+                    "name": "mode",
+                    "value": "Velocity"
+                },
+                {
+                    "type": "slider",
+                    "name": "speed",
+                    "value": 1
+                }
+            ]
+        },
+        {
+            "name": "move",
+            "active": false,
+            "settings": [
+                {
+                    "type": "slider",
+                    "name": "distance",
+                    "value": 5
+                }
+            ],
+            "position": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        {
+            "name": "novoid",
+            "active": false,
+            "bind": {
+                "active": false,
+                "position": {
+                    "x": 0,
+                    "y": 0
+                }
+            },
+            "settings": [
+                {
+                    "type": "slider",
+                    "name": "distance",
+                    "value": 5
+                }
+            ]
+        },
+        {
+            "name": "safewalk",
+            "active": false,
+            "bind": {
+                "active": false,
+                "position": {
+                    "x": 0,
+                    "y": 0
+                }
+            }
+        },
+        {
+            "name": "scaffold",
+            "active": false,
+            "bind": {
+                "active": false,
+                "position": {
+                    "x": 0,
+                    "y": 0
+                }
+            },
+            "settings": [
+                {
+                    "type": "state",
+                    "name": "auto select",
+                    "value": false
+                }
+            ]
+        },
+        {
+            "name": "speedhack",
+            "active": false,
+            "bind": {
+                "active": false,
+                "position": {
+                    "x": 0,
+                    "y": 0
+                }
+            },
+            "settings": [
+                {
+                    "type": "slider",
+                    "name": "velocity",
+                    "value": 0.6
+                },
+                {
+                    "type": "slider",
+                    "name": "velocity-y",
+                    "value": 0.4
+                }
+            ]
+        },
+        {
+            "name": "antiafk",
+            "active": false
+        },
+        {
+            "name": "autoarmor",
+            "active": true,
+            "bind": {
+                "active": false,
+                "position": {
+                    "x": 0,
+                    "y": 0
+                }
+            },
+            "settings": [
+                {
+                    "type": "state",
+                    "name": "inventory only",
+                    "value": true
+                },
+                {
+                    "type": "slider",
+                    "name": "delay",
+                    "value": 5
+                }
+            ]
+        },
+        {
+            "name": "autoclicker",
+            "active": false,
+            "bind": {
+                "active": false,
+                "position": {
+                    "x": 0,
+                    "y": 0
+                }
+            },
+            "settings": [
+                {
+                    "type": "slider",
+                    "name": "cps",
+                    "value": 20
+                },
+                {
+                    "type": "state",
+                    "name": "right click",
+                    "value": false
+                }
+            ]
+        },
+        {
+            "name": "autosprint",
+            "active": false,
+            "bind": {
+                "active": false,
+                "position": {
+                    "x": 0,
+                    "y": 0
+                }
+            }
+        },
+        {
+            "name": "autosword",
+            "active": false,
+            "bind": {
+                "active": false,
+                "position": {
+                    "x": 0,
+                    "y": 0
+                }
+            },
+            "settings": [
+                {
+                    "type": "slider",
+                    "name": "sword slot",
+                    "value": 0
+                }
+            ]
+        },
+        {
+            "name": "autototem",
+            "active": false,
+            "bind": {
+                "active": false,
+                "position": {
+                    "x": 0,
+                    "y": 0
+                }
+            }
+        },
+        {
+            "name": "bedfucker",
+            "active": false,
+            "bind": {
+                "active": false,
+                "position": {
+                    "x": 0,
+                    "y": 0
+                }
+            },
+            "settings": [
+                {
+                    "type": "slider",
+                    "name": "delay",
+                    "value": 10
+                },
+                {
+                    "type": "slider",
+                    "name": "range",
+                    "value": 5
+                }
+            ]
+        },
+        {
+            "name": "cheststealer",
+            "active": false,
+            "bind": {
+                "active": false,
+                "position": {
+                    "x": 0,
+                    "y": 0
+                }
+            },
+            "settings": [
+                {
+                    "type": "slider",
+                    "name": "loot delay",
+                    "value": 1
+                },
+                {
+                    "type": "slider",
+                    "name": "close delay",
+                    "value": 10
+                }
+            ]
+        },
+        {
+            "name": "fastbreak",
+            "active": false,
+            "bind": {
+                "active": false,
+                "position": {
+                    "x": 0,
+                    "y": 0
+                }
+            },
+            "settings": [
+                {
+                    "type": "state",
+                    "name": "tap destroy",
+                    "value": false
+                },
+                {
+                    "type": "slider",
+                    "name": "amplifier",
+                    "value": 255
+                }
+            ]
+        },
+        {
+            "name": "fasteat",
+            "active": false,
+            "bind": {
+                "active": false,
+                "position": {
+                    "x": 0,
+                    "y": 0
+                }
+            },
+            "settings": [
+                {
+                    "type": "slider",
+                    "name": "duration",
+                    "value": 1
+                }
+            ]
+        },
+        {
+            "name": "fastladder",
+            "active": false,
+            "bind": {
+                "active": false,
+                "position": {
+                    "x": 0,
+                    "y": 0
+                }
+            },
+            "settings": [
+                {
+                    "type": "slider",
+                    "name": "velocity",
+                    "value": 0.4
+                },
+                {
+                    "type": "slider",
+                    "name": "activation angle",
+                    "value": 30
+                }
+            ]
+        },
+        {
+            "name": "fastpearl",
+            "active": true,
+            "position": {
+                "x": 282,
+                "y": -301
+            }
+        },
+        {
+            "name": "fullbright",
+            "active": true
+        },
+        {
+            "name": "inventorycleaner",
+            "active": false,
+            "bind": {
+                "active": false,
+                "position": {
+                    "x": 0,
+                    "y": 0
+                }
+            },
+            "settings": [
+                {
+                    "type": "slider",
+                    "name": "speed (not working)",
+                    "value": 2
+                },
+                {
+                    "type": "state",
+                    "name": "drop",
+                    "value": true
+                },
+                {
+                    "type": "state",
+                    "name": "clean hotbar",
+                    "value": true
+                },
+                {
+                    "type": "state",
+                    "name": "drop useless items",
+                    "value": true
+                },
+                {
+                    "type": "state",
+                    "name": "drop duplicated items",
+                    "value": false
+                },
+                {
+                    "type": "state",
+                    "name": "drop weak items",
+                    "value": false
+                }
+            ]
+        },
+        {
+            "name": "jesus",
+            "active": false,
+            "bind": {
+                "active": false,
+                "position": {
+                    "x": 0,
+                    "y": 0
+                }
+            }
+        },
+        {
+            "name": "nuker",
+            "active": false,
+            "bind": {
+                "active": false,
+                "position": {
+                    "x": 0,
+                    "y": 0
+                }
+            },
+            "settings": [
+                {
+                    "type": "slider",
+                    "name": "radius",
+                    "value": 2
+                }
+            ]
+        },
+        {
+            "name": "step",
+            "active": false,
+            "settings": [
+                {
+                    "type": "slider",
+                    "name": "max height",
+                    "value": 1
+                }
+            ]
+        },
+        {
+            "name": "ambience",
+            "active": false,
+            "bind": {
+                "active": false,
+                "position": {
+                    "x": 0,
+                    "y": 0
+                }
+            },
+            "settings": [
+                {
+                    "type": "slider",
+                    "name": "time",
+                    "value": 0
+                },
+                {
+                    "type": "state",
+                    "name": "day cycle",
+                    "value": false
+                },
+                {
+                    "type": "slider",
+                    "name": "cycle speed",
+                    "value": 5
+                },
+                {
+                    "type": "state",
+                    "name": "recolor sky",
+                    "value": false
+                },
+                {
+                    "type": "slider",
+                    "name": "red (sky)",
+                    "value": 0.19
+                },
+                {
+                    "type": "slider",
+                    "name": "green (sky)",
+                    "value": 0.71
+                },
+                {
+                    "type": "slider",
+                    "name": "blue (sky)",
+                    "value": 0.03
+                },
+                {
+                    "type": "state",
+                    "name": "rainbow (sky)",
+                    "value": false
+                },
+                {
+                    "type": "state",
+                    "name": "recolor fog",
+                    "value": false
+                },
+                {
+                    "type": "slider",
+                    "name": "red (fog)",
+                    "value": 0.19
+                },
+                {
+                    "type": "slider",
+                    "name": "green (fog)",
+                    "value": 0.71
+                },
+                {
+                    "type": "slider",
+                    "name": "blue (fog)",
+                    "value": 0.03
+                },
+                {
+                    "type": "state",
+                    "name": "rainbow (fog)",
+                    "value": false
+                },
+                {
+                    "type": "state",
+                    "name": "recolor clouds",
+                    "value": false
+                },
+                {
+                    "type": "slider",
+                    "name": "red (clouds)",
+                    "value": 0.19
+                },
+                {
+                    "type": "slider",
+                    "name": "green (clouds)",
+                    "value": 0.71
+                },
+                {
+                    "type": "slider",
+                    "name": "blue (clouds)",
+                    "value": 0.03
+                },
+                {
+                    "type": "state",
+                    "name": "rainbow (clouds)",
+                    "value": false
+                },
+                {
+                    "type": "slider",
+                    "name": "rainbow speed",
+                    "value": 0.1
+                }
+            ]
+        },
+        {
+            "name": "antiimmobile",
+            "active": false,
+            "bind": {
+                "active": false,
+                "position": {
+                    "x": 0,
+                    "y": 0
+                }
+            }
+        },
+        {
+            "name": "armorhud",
+            "active": false,
+            "bind": {
+                "active": false,
+                "position": {
+                    "x": 0,
+                    "y": 0
+                }
+            },
+            "settings": [
+                {
+                    "type": "mode",
+                    "name": "mode",
+                    "value": "Vertical"
+                },
+                {
+                    "type": "slider",
+                    "name": "size",
+                    "value": 1
+                },
+                {
+                    "type": "slider",
+                    "name": "position x",
+                    "value": 0
+                },
+                {
+                    "type": "slider",
+                    "name": "position y",
+                    "value": 0
+                }
+            ]
+        },
+        {
+            "name": "chams",
+            "active": false,
+            "bind": {
+                "active": false,
+                "position": {
+                    "x": 0,
+                    "y": 0
+                }
+            },
+            "settings": [
+                {
+                    "type": "slider",
+                    "name": "red",
+                    "value": 0.19
+                },
+                {
+                    "type": "slider",
+                    "name": "green",
+                    "value": 0.71
+                },
+                {
+                    "type": "slider",
+                    "name": "blue",
+                    "value": 0.03
+                },
+                {
+                    "type": "slider",
+                    "name": "alpha",
+                    "value": 1
+                },
+                {
+                    "type": "slider",
+                    "name": "brightness",
+                    "value": 1
+                },
+                {
+                    "type": "state",
+                    "name": "rainbow",
+                    "value": false
+                },
+                {
+                    "type": "slider",
+                    "name": "rainbow speed",
+                    "value": 0.1
+                },
+                {
+                    "type": "state",
+                    "name": "through walls",
+                    "value": false
+                }
+            ]
+        },
+        {
+            "name": "chatmacros",
+            "active": false,
+            "settings": [
+                {
+                    "type": "text-field",
+                    "name": "macros",
+                    "value": "\/kit start;\/pvp"
+                }
+            ]
+        },
+        {
+            "name": "coordinates",
+            "active": false,
+            "settings": [
+                {
+                    "type": "slider",
+                    "name": "position x",
+                    "value": 0.5
+                },
+                {
+                    "type": "slider",
+                    "name": "position y",
+                    "value": 0.5
+                }
+            ]
+        },
+        {
+            "name": "f5",
+            "bind": {
+                "active": true,
+                "position": {
+                    "x": 618,
+                    "y": -223
+                }
+            },
+            "settings": [
+                {
+                    "type": "state",
+                    "name": "skip third person view",
+                    "value": false
+                },
+                {
+                    "type": "mode",
+                    "name": "view from",
+                    "value": "Front"
+                }
+            ]
+        },
+        {
+            "name": "fastregister",
+            "settings": [
+                {
+                    "type": "text-field",
+                    "name": "password",
+                    "value": "qwertyuiop123456789"
+                }
+            ]
+        },
+        {
+            "name": "friendlist",
+            "friends": []
+        },
+        {
+            "name": "handview",
+            "active": false,
+            "bind": {
+                "active": false,
+                "position": {
+                    "x": 0,
+                    "y": 0
+                }
+            },
+            "settings": [
+                {
+                    "type": "slider",
+                    "name": "pos x",
+                    "value": 1
+                },
+                {
+                    "type": "slider",
+                    "name": "pos y",
+                    "value": 1
+                },
+                {
+                    "type": "slider",
+                    "name": "pos z",
+                    "value": 1
+                },
+                {
+                    "type": "slider",
+                    "name": "rot x",
+                    "value": 1
+                },
+                {
+                    "type": "slider",
+                    "name": "rot y",
+                    "value": 1
+                },
+                {
+                    "type": "slider",
+                    "name": "rot z",
+                    "value": 1
+                },
+                {
+                    "type": "slider",
+                    "name": "rot x 2",
+                    "value": 1
+                },
+                {
+                    "type": "slider",
+                    "name": "rot y 2",
+                    "value": 1
+                },
+                {
+                    "type": "slider",
+                    "name": "rot z 2",
+                    "value": 1
+                }
+            ]
+        },
+        {
+            "name": "nofriends",
+            "active": false,
+            "bind": {
+                "active": false,
+                "position": {
+                    "x": 0,
+                    "y": 0
+                }
+            }
+        },
+        {
+            "name": "nopackets",
+            "active": false,
+            "bind": {
+                "active": false,
+                "position": {
+                    "x": 0,
+                    "y": 0
+                }
+            }
+        },
+        {
+            "name": "spammer",
+            "active": false,
+            "settings": [
+                {
+                    "type": "slider",
+                    "name": "messages per second",
+                    "value": 20
+                },
+                {
+                    "type": "state",
+                    "name": "random string at the end",
+                    "value": false
+                },
+                {
+                    "type": "slider",
+                    "name": "count of random symbols",
+                    "value": 4
+                },
+                {
+                    "type": "text-field",
+                    "name": "text",
+                    "value": "Variable - the best mcpe hacked client!"
+                }
+            ]
+        },
+        {
+            "name": "fastunban",
+            "settings": [
+                {
+                    "type": "state",
+                    "name": "change username",
+                    "value": true
+                },
+                {
+                    "type": "state",
+                    "name": "delete clientid.txt",
+                    "value": true
+                },
+                {
+                    "type": "state",
+                    "name": "change device",
+                    "value": false
+                },
+                {
+                    "type": "state",
+                    "name": "random",
+                    "value": true
+                },
+                {
+                    "type": "state",
+                    "name": "change manufacturer",
+                    "value": false
+                },
+                {
+                    "type": "text-field",
+                    "name": "manufacturer",
+                    "value": "Google"
+                },
+                {
+                    "type": "state",
+                    "name": "change model",
+                    "value": false
+                },
+                {
+                    "type": "text-field",
+                    "name": "model",
+                    "value": "Pixel 6"
+                }
+            ]
+        },
+        {
+            "name": "ghostmode",
+            "active": false
+        },
+        {
+            "name": "notifications",
+            "active": false,
+            "settings": [
+                {
+                    "type": "slider",
+                    "name": "delay",
+                    "value": 2.5
+                }
+            ]
+        },
+        {
+            "name": "panic",
+            "bind": {
+                "active": false,
+                "position": {
+                    "x": 0,
+                    "y": 0
+                }
+            }
+        },
+        {
+            "name": "killaura by zeld",
+            "active": false,
+            "bind": {
+                "active": true,
+                "position": {
+                    "x": 431,
+                    "y": -202
+                }
+            },
+            "settings": [
+                {
+                    "type": "slider",
+                    "name": "range",
+                    "value": 3
+                },
+                {
+                    "type": "state",
+                    "name": "focus target",
+                    "value": true
+                },
+                {
+                    "type": "slider",
+                    "name": "cps",
+                    "value": 4
+                },
+                {
+                    "type": "state",
+                    "name": "through walls",
+                    "value": false
+                },
+                {
+                    "type": "state",
+                    "name": "auto disable",
+                    "value": true
+                }
+            ]
+        }
+    ]
+}
