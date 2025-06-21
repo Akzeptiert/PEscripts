@@ -1,0 +1,35 @@
+let timer = 0;
+let on = false;
+
+Data.getBoolean("Scaff-loade", !1) && (Data.remove("Scaff-loade"), ModuleManager.addModule(new d("ScaffoldFix", !1, !1, ModuleCategory.OTHER).setOnClickListener((function (e) {
+
+if (Module.isActive("Scaffold")) {
+on = true;
+} else {
+on = false;
+}
+
+}))));
+
+function onSendPacket(a, b) {
+if (on) {
+        if (a = PacketType.ANIMATE_PACKET) {
+           preventDefault();
+        }
+
+
+        if (a = PacketType.UPDATE_BLOCK_PACKET) {
+           preventDefault();
+        }
+        
+        if (a = PacketType.USE_ITEM_PACKET) {
+        if (timer > 20) {return;}
+        preventDefault();
+        timer = 0;
+        }
+    }
+if (Module.isActive("Scaffold")) {
+} else {
+on = false;
+}
+}

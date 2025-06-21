@@ -1,0 +1,89 @@
+const module = new Module("HeadDetect", true, true, ModuleCategory.MISC);
+
+var threadRunning = false;
+var searchThread;
+let a;
+let b;
+let c;
+
+function onLevelTick() {
+    if (module.isActive()) {
+        if (!threadRunning) {
+            threadRunning = true;
+            searchThread = new java.lang.Thread(new java.lang.Runnable({
+                run: function () {
+                    let radius = 4;
+                    
+                    while (threadRunning) {
+                        var playerX = LocalPlayer.getPositionX();
+                        var playerY = LocalPlayer.getPositionY();
+                        var playerZ = LocalPlayer.getPositionZ();
+
+                        var minX = Math.floor(playerX - radius);
+                        var maxX = Math.floor(playerX + radius);
+                        var minY = Math.floor(playerY - radius);
+                        var maxY = Math.floor(playerY + radius);
+                        var minZ = Math.floor(playerZ - radius);
+                        var maxZ = Math.floor(playerZ + radius);
+
+                        var headX, headY, headZ;
+
+                        // Поиск кровати
+                        for (var x = minX; x <= maxX; x++) {
+                            for (var y = minY; y <= maxY; y++) {
+                                for (var z = minZ; z <= maxZ; z++) {
+                                    blockId = Block.getID(x, y, z);
+
+                                    if (blockId === 144) { // голова
+                                        headX = x;
+                                        headY = y;
+                                        headZ = z;
+                                        a = headX;
+                                        b = headY;
+                                        c = headZ;
+                                        LocalPlayer.buildBlock(headX, headY, headZ);
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                        java.lang.Thread.sleep(100);
+                    }
+                }
+            }));
+            searchThread.start();
+        }
+    } else {
+        if (threadRunning) {
+            threadRunning = false;
+        }
+    }
+}
+
+function onSendPacket(a, b) {
+    if (module.isActive()) {
+        if (a == PacketType.USE_ITEM_PACKET) {
+            let deltaX = 0.5;
+            let deltaY = deltaX;
+
+            deltaX = Math.max(0.0, Math.min(0.5, deltaX));
+            deltaY = Math.max(0.0, Math.min(0.5, deltaY));
+
+            Memory.setFloat(b, 40, deltaX);
+            Memory.setFloat(b, 44, 1);
+            Memory.setFloat(b, 48, deltaY);
+            
+        let u = Memory.getFloat(b + 40);
+        let uu = Memory.getFloat(b + 44);
+        let uuu = Memory.getFloat(b + 48);
+        }
+    }
+}
+
+function onScriptEnabled() {
+    ModuleManager.addModule(module);
+}
+
+function onScriptDisabled() {
+    ModuleManager.removeModule(module);
+}

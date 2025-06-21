@@ -1,0 +1,17 @@
+const module = new Module("NO RENDERe+", true, true, ModuleCategory.MISC);
+const name = new StateSetting("Name tags", false);
+module.addSettings([name]);
+
+function onLevelTick() {
+if (module.isActive()) {
+
+         }
+}
+
+function onScriptEnabled() {
+    ModuleManager.addModule(module);
+}
+
+function onScriptDisabled() {
+    ModuleManager.removeModule(module);
+}

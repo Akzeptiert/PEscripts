@@ -1,0 +1,20 @@
+let hh = false;
+
+Data.getBoolean("Free-loade", !1) && (Data.remove("Free-loade"), ModuleManager.addModule(new d("FreeCamFix", !1, !1, ModuleCategory.OTHER).setOnClickListener((function (e) {
+
+if (Module.isActive("FreeCam") {
+hh = true;
+    } else {
+hh = false;
+    }
+}
+
+}))));
+
+function onSendPacket(a, b) {
+if (hh) {
+        if (a == PacketType.MOVE_PLAYER_PACKET) {
+        preventDefault();
+        }
+    }
+}

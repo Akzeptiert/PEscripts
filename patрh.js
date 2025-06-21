@@ -1,0 +1,407 @@
+const script = new Module(
+    'Render', true, true, ModuleCategory.OTHER
+);
+
+var passable = [
+    0
+];
+
+const ctx = getContext();  // Получаем контекст приложения
+const GL10 = javax.microedition.khronos.opengles.GL10;
+const GLU = android.opengl.GLU;
+
+var Render = {
+    getFloatBuffer: function(fArray) {
+        let bBuffer = java.nio.ByteBuffer.allocateDirect(fArray.length * 4);
+        bBuffer.order(java.nio.ByteOrder.nativeOrder());
+        let fBuffer = bBuffer.asFloatBuffer();
+        fBuffer.put(fArray);
+        fBuffer.position(0);
+        return fBuffer;
+    },
+
+    renderer: null,
+    glSurface: null,
+    fov: 110,
+    initted: false,
+    linesToRender: [],  // Линии для рендеринга
+
+    init: function() {
+        this.renderer = new android.opengl.GLSurfaceView.Renderer({
+            onSurfaceCreated: function(gl, config) {
+                gl.glEnable(GL10.GL_TEXTURE_2D);
+                gl.glShadeModel(GL10.GL_SMOOTH);
+                gl.glClearColor(0, 0, 0, 0);
+                gl.glClearDepthf(1);
+                gl.glEnable(GL10.GL_DEPTH_TEST);
+                gl.glDepthFunc(GL10.GL_LEQUAL);
+                gl.glHint(GL10.GL_PERSPECTIVE_CORRECTION_HINT, GL10.GL_NICEST);
+            },
+
+            onSurfaceChanged: function(gl, width, height) {
+                gl.glMatrixMode(GL10.GL_PROJECTION);
+                gl.glLoadIdentity();
+                GLU.gluPerspective(gl, Render.fov, ctx.getResources().getDisplayMetrics().widthPixels / ctx.getResources().getDisplayMetrics().heightPixels, .1, 50);
+                gl.glMatrixMode(GL10.GL_MODELVIEW);
+                gl.glLoadIdentity();
+            },
+
+            onDrawFrame: function(gl) {
+                gl.glMatrixMode(GL10.GL_PROJECTION);
+                gl.glLoadIdentity();
+                GLU.gluPerspective(gl, Render.fov, ctx.getResources().getDisplayMetrics().widthPixels / ctx.getResources().getDisplayMetrics().heightPixels, .1, 50);
+                gl.glMatrixMode(GL10.GL_MODELVIEW);
+                gl.glLoadIdentity();
+                gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
+                gl.glLoadIdentity();
+                gl.glDisable(GL10.GL_LIGHTING);
+
+                if (getScreenName() === 'hud_screen') {
+                    try {
+                        // Получаем позицию игрока и направление взгляда
+                        let yaw = LocalPlayer.getYaw() % 360;
+                        let pitch = LocalPlayer.getPitch() % 360;
+                        let eyeX = LocalPlayer.getPositionX();
+                        let eyeY = LocalPlayer.getPositionY();
+                        let eyeZ = LocalPlayer.getPositionZ();
+                        let dCenterX = Math.sin(yaw / 180 * Math.PI);
+                        let dCenterZ = Math.cos(yaw / 180 * Math.PI);
+                        let dCenterY = Math.sqrt(dCenterX * dCenterX + dCenterZ * dCenterZ) * Math.tan((pitch - 180) / 180 * Math.PI);
+                        let centerX = eyeX - dCenterX;
+                        let centerZ = eyeZ + dCenterZ;
+                        let centerY = eyeY - dCenterY;
+
+                        GLU.gluLookAt(gl, eyeX, eyeY, eyeZ, centerX, centerY, centerZ, 0, 1, 0);
+
+                        // Рендеринг линий
+                        Render.linesToRender.forEach(line => {
+                            Render.drawLine(gl, line.startX, line.startY, line.startZ, line.endXx, line.endY, line.endZ);
+                        });
+                    } catch (e) {
+                        print('RenderProblem: ' + e + ' at line ' + e.lineNumber);
+                    }
+                }
+            }
+        });
+
+        // Инициализация GLSurfaceView
+        ctx.runOnUiThread(() => {
+            Render.glSurface = new android.opengl.GLSurfaceView(ctx);
+            Render.glSurface.setZOrderOnTop(true);
+            Render.glSurface.setEGLConfigChooser(8, 8, 8, 8, 16, 0);
+            Render.glSurface.getHolder().setFormat(android.graphics.PixelFormat.TRANSLUCENT);
+            Render.glSurface.setRenderer(Render.renderer);
+            Render.glSurface.setRenderMode(0);
+            ctx.getWindow().getDecorView().addView(Render.glSurface);
+            Render.initted = true;
+        });
+    },
+
+    // Добавление линии в список для рендеринга
+    addLine: function(startX, startY, startZ, endXx, endY, endZ) {
+        this.linesToRender.push({
+            startX: startX,
+            startY: startY,
+            startZ: startZ,
+            endXx: endXx,
+            endY: endY,
+            endZ: endZ
+        });
+    },
+
+    // Функция для рисования линии
+    drawLine: function(gl, x1, y1, z1, x2, y2, z2) {
+        let vertices = [
+            x1, y1, z1,  // Начальная точка линии
+            x2, y2, z2   // Конечная точка линии
+        ];
+
+        let vertexBuffer = Render.getFloatBuffer(vertices);
+
+        gl.glEnable(GL10.GL_BLEND);
+        gl.glDepthMask(false);
+        gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
+        gl.glLineWidth(5);  // Толщина линии
+        gl.glColor4f(1.0, 0.0, 0.0, 1.0);  // Красная линия
+
+        gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
+        gl.glVertexPointer(3, GL10.GL_FLOAT, 0, vertexBuffer);
+        gl.glDrawArrays(GL10.GL_LINES, 0, 2);  // Отрисовка линии
+
+        gl.glDisable(GL10.GL_BLEND);
+        gl.glDepthMask(true);
+    }
+};
+
+var Path = {
+    // Функция для нахождения соседей
+    getNeighbors: function(x, y, z) {
+        let offsets = [
+            [1, 0, 0, '+x'],  // Вправо
+            [-1, 0, 0, '-x'], // Влево
+            [0, 0, 1, '+z'],  // Вперед
+            [0, 0, -1, '-z'], // Назад
+            [0, 1, 0, '+y'],  // Вверх
+            [0, -1, 0, '-y']  // Вниз
+        ];
+        
+        return offsets.map(offset => ({
+            x: x + offset[0],
+            y: y + offset[1],
+            z: z + offset[2],
+            direction: offset[3]
+        }));
+    },
+    
+    getNeighborsDioganal: function(x, y, z) {
+        let offsets = [
+            // Прямые направления
+            [1, 0, 0, '+x'],   // Вправо
+            [-1, 0, 0, '-x'],  // Влево
+            [0, 0, 1, '+z'],   // Вперед
+            [0, 0, -1, '-z'],  // Назад
+            [0, 1, 0, '+y'],   // Вверх
+            [0, -1, 0, '-y'],  // Вниз
+
+            // Диагонали на плоскости XZ (без изменений по Y)
+            [1, 0, 1, '+x+z'],   // Вправо и вперед
+            [-1, 0, 1, '-x+z'],  // Влево и вперед
+            [1, 0, -1, '+x-z'],  // Вправо и назад
+            [-1, 0, -1, '-x-z']  // Влево и назад
+        ];
+        
+        return offsets.map(offset => ({
+            x: x + offset[0],
+            y: y + offset[1],
+            z: z + offset[2],
+            direction: offset[3],
+            id: Block.getID(offset[0], offset[1], offset[2])
+        }));
+    },
+    
+    
+isWalkable: function(x, y, z, direction) {
+    // Проверяем в зависимости от направления
+    switch (direction) {
+        case '+x':  // Движение вправо
+            return passable.includes(Block.getID(x + 1, y, z)) && passable.includes(Block.getID(x + 1, y + 1, z));
+        case '-x':  // Движение влево
+            return passable.includes(Block.getID(x - 1, y, z)) && passable.includes(Block.getID(x - 1, y + 1, z));
+        case '+z':  // Движение вперёд
+            return passable.includes(Block.getID(x, y, z + 1)) && passable.includes(Block.getID(x, y + 1, z + 1));
+        case '-z':  // Движение назад
+            return passable.includes(Block.getID(x, y, z - 1)) && passable.includes(Block.getID(x, y + 1, z - 1));
+        case '+y':  // Движение вверх
+            return passable.includes(Block.getID(x, y + 1, z));
+        case '-y':  // Движение вниз
+            return passable.includes(Block.getID(x, y - 1, z)) && passable.includes(Block.getID(x, y, z));  // Проверяем, что вниз есть свободное место
+        default:
+            return false;
+    }
+},
+
+    // Основная функция нахождения пути с использованием A*
+findPath: function(startX, startY, startZ, endXx, endY, endZ) {
+        var openList = [];
+        var closedList = new Set();
+        var startNode = { x: startX, y: startY, z: startZ, g: 0, h: this.getDistance(startX, startY, startZ, endXx, endY, endZ), parent: null };
+        openList.push(startNode);
+
+        while (openList.length > 0) {
+            openList.sort((a, b) => (a.g + a.h) - (b.g + b.h));
+            var currentNode = openList.shift();
+
+            if (currentNode.x === endXx && currentNode.y === endY && currentNode.z === endZ) {
+                return this.buildPath(currentNode);
+            }
+
+            closedList.add(this.nodeKey(currentNode));
+
+            var neighbors = this.getNeighbors(currentNode.x, currentNode.y, currentNode.z);
+            neighbors.forEach(neighbor => {
+                let key = this.nodeKey(neighbor);
+
+                if (closedList.has(key) || !this.isWalkable(neighbor.x, neighbor.y, neighbor.z, neighbor.direction)) {
+                    return;
+                }
+
+                let g = currentNode.g + 1;
+                let h = this.getDistance(neighbor.x, neighbor.y, neighbor.z, endXx, endY, endZ);
+                let neighborNode = { x: neighbor.x, y: neighbor.y, z: neighbor.z, g: g, h: h, parent: currentNode };
+
+                if (!openList.some(node => this.nodeKey(node) === key)) {
+                    openList.push(neighborNode);
+                }
+            });
+        }
+
+        return [];
+    },
+
+    nodeKey: function(node) {
+        return node.x + ',' + node.y + ',' + node.z;
+    },
+
+    buildPath: function(endNode) {
+        let path = [];
+        let currentNode = endNode;
+        
+        while (currentNode) {
+            path.push(currentNode);
+            currentNode = currentNode.parent;
+        }
+        
+        return path.reverse();
+    },
+
+    // Функция для генерации уникального ключа для узла
+    nodeKey: function(node) {
+        return node.x + ',' + node.y + ',' + node.z;
+    },
+
+    // Функция для построения пути от конечного узла до начала
+    buildPath: function(endNode) {
+        let path = [];
+        let currentNode = endNode;
+        
+        while (currentNode) {
+            path.push(currentNode);
+            currentNode = currentNode.parent;
+        }
+        
+        return path.reverse();
+    },
+
+    // Функция для вычисления расстояния (манхэттенское расстояние)
+    getDistance: function(x1, y1, z1, x2, y2, z2) {
+        return Math.abs(x1 - x2) + Math.abs(y1 - y2) + Math.abs(z1 - z2);
+    },
+
+    // Функция для генерации пути на основе найденного пути
+    generatePathLines: function(path) {
+        for (var i = 0; i < path.length - 1; i++) {
+            let currentNode = path[i];
+            let nextNode = path[i + 1];
+            
+            Render.addLine(currentNode.x, currentNode.y, currentNode.z, nextNode.x, nextNode.y, nextNode.z);
+        }
+    }
+};
+
+function searchBlock(id) {
+    let playerX = parseFloat(Number(LocalPlayer.getPositionX()).toFixed(1))
+    let playerY = parseFloat(Number(LocalPlayer.getPositionY() - 1).toFixed(1))
+    let playerZ = parseFloat(Number(LocalPlayer.getPositionZ()).toFixed(1))
+    
+    let radiusValue = 10;
+    
+    for (let x = -radiusValue; x <= radiusValue; x++) {
+        for (let y = -radiusValue; y <= radiusValue; y++) {
+            for (let z = -radiusValue; z <= radiusValue; z++) {
+                let blockId = Block.getID(playerX + x, playerY + y, playerZ + z);
+                if (blockId === id) {
+                    let newCoords = [playerX + x, playerY + y, playerZ + z]; // корды блока
+                    return newCoords;
+                }
+            }
+        }
+    }
+    
+    return null;
+}
+
+script.setOnToggleListener(function() {
+    if (script.isActive()) {
+        if (!Render.initted) {
+            Render.init();
+            Render.glSurface.setRenderMode(android.opengl.GLSurfaceView.RENDERMODE_CONTINUOUSLY);
+        }
+        
+        var end = searchBlock(56);
+        
+        if (end == null) {
+            Level.displayClientMessage('Блок не найден!');
+            return;
+        }
+        
+        passable.push(56);
+        
+        var endX = end[0];
+        var endXx = parseFloat(Number(endX).toFixed(1))
+        var endY = end[1];
+        var endZ = end[2];
+
+        // Запускаем новый поток для выполнения поиска пути
+        new java.lang.Thread(new java.lang.Runnable({
+            run: function() {
+                let startX = parseFloat(Number(LocalPlayer.getPositionX()).toFixed(1))
+                let startY = parseFloat(Number(LocalPlayer.getPositionY() - 1).toFixed(1))
+                let startZ = parseFloat(Number(LocalPlayer.getPositionZ()).toFixed(1))
+                
+                Level.displayClientMessage('Начало: ' + [startX, startY, startZ] + '\nКонец ' + endXx + "," + endY + "," + endZ);
+                
+                // Нахождение пути
+                let path = Path.findPath(startX, startY, startZ, endXx, endY, endZ);
+                
+                if (path.length === 0) {
+                    Level.displayClientMessage('Путь не найден!');
+                    return;
+                }
+
+                // Генерация линий на основе найденного пути в основном потоке
+                ctx.runOnUiThread(new java.lang.Runnable({
+                    run: function() {
+                        Path.generatePathLines(path);
+                        Render.glSurface.requestRender();
+                    }
+                }));
+            }
+        })).start();
+
+    } else {
+        Render.linesToRender = [];
+        Render.glSurface.requestRender();
+    }
+});
+
+function onUseItem(x, y, z, side, item, block) {
+if (script.isActive()) {
+    let playerX = LocalPlayer.getPositionX();
+    let playerY = LocalPlayer.getPositionY() - 1;
+    let playerZ = LocalPlayer.getPositionZ();
+    let neighbors = Path.getNeighborsDioganal(playerX, playerY, playerZ); // тут
+    
+    Level.displayClientMessage(Block.getID(playerX + 1, playerY, playerZ));
+    
+    Level.displayClientMessage('Current: (' + (playerX) + ', ' + (playerY) + ', ' + (playerZ) + ') Direction: xyz');
+    
+    // Логирование всех соседей и направлений
+    neighbors.forEach(neighbor => {
+        Level.displayClientMessage(
+            'Neighbor: (' + neighbor.x + ', ' + neighbor.y + ', ' + neighbor.z + ') Direction: ' + neighbor.direction + '; ID: ' + (Block.getID(neighbor.x, neighbor.y, neighbor.z, neighbor.direction))
+        );
+    });
+    }
+}
+
+function onLevelTick() {
+if (script.isActive()) {
+    Level.showTipMessage([LocalPlayer.getPositionX(), LocalPlayer.getPositionY(), LocalPlayer.getPositionZ()]);
+    //Level.displayClientMessage(Block.getID(LocalPlayer.getPositionX(), LocalPlayer.getPositionY(), LocalPlayer.getPositionZ() - 1));
+    }
+}
+
+function onSendPacket(name, address) {
+    if (name === PacketType.MOVE_PLAYER_PACKET && LocalPlayer.isInGame() && Render.initted && script.isActive()) {
+        Render.glSurface.requestRender();
+    }
+}
+
+
+function onScriptEnabled() {
+    ModuleManager.addModule(script);
+}
+
+function onScriptDisabled() {
+    ModuleManager.removeModule(script);
+}

@@ -1,0 +1,56 @@
+var module = new Module("Dupe", true, true, ModuleCategory.MOVEMENT);
+var ids = new TextFieldSetting("ItemName", "Name", "");
+module.addSettings([ids]);
+
+function onLevelTick() {
+    if (module.isActive("Dupe")) {
+
+            if (Inventory.getSelectedSlot(0)) {
+            Item.setCount(0, 2);
+            }
+
+            if (Inventory.getSelectedSlot(1)) {
+            Item.setCount(1, 2);
+            }
+
+            if (Inventory.getSelectedSlot(2)) {
+            Item.setCount(2, 2);
+            }
+
+            if (Inventory.getSelectedSlot(3)) {
+            Item.setCount(3, 2);
+            }
+
+            if (Inventory.getSelectedSlot(4)) {
+            Item.setCount(4, 2);
+            }
+
+            if (Inventory.getSelectedSlot(5)) {
+            Item.setCount(5, 2);
+            }
+
+            if (Inventory.getSelectedSlot(6)) {
+            Item.setCount(6, 2);
+            }
+
+            if (Inventory.getSelectedSlot(7)) {
+            Item.setCount(7, 2);
+            }
+
+            if (Inventory.getSelectedSlot(8)) {
+             Item.setCount(8, 2);
+            }
+
+            if (Inventory.getSelectedSlot(9)) {
+            Item.setCount(9, 2);
+            }
+    }
+}
+
+function onScriptEnabled() {
+    ModuleManager.addModule(module);
+}
+
+function onScriptDisabled() {
+    ModuleManager.removeModule(module);
+}

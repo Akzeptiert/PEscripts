@@ -1,0 +1,35 @@
+Data.getBoolean("trigger-loade", !1) && (Data.remove("trigger-loade"), ModuleManager.addModule(new d("TriggerFix", !1, !1, ModuleCategory.MISC).setOnClickListener((function (e) {
+    if (Module.isActive("TriggerBot")) {
+let cps = Module.getSetting("CPS");
+
+let hm = LocalPlayer.getPointedPlayer();
+
+let timer = 0;
+
+let timerr = 0;
+
+let ji = Module.getSetting("Random");
+
+let ij = Module.getSetting("Minimal CPS");
+
+let ki = Module.getSetting("Maximal CPS");
+
+timer++
+
+if (timer < hm) { return; } 
+LocalPlayer.attack(hm);
+timer = 0;
+
+if (ji) {
+
+let randomCPS = Math.floor(Math.random() * (ki - ij + 1)) + ij;
+
+timerr++
+
+if (timerr < randomCPS) { return; } 
+LocalPlayer.attack(hm);
+timerr = 0;
+
+}
+
+}))));

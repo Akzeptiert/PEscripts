@@ -1,0 +1,416 @@
+const module = new Module("MovableWindow", true, true, ModuleCategory.MISC);
+const ctx = getContext();
+
+let fly = false;
+let hit = false;
+let fall = false;
+let air = false;
+let speed = false;
+
+function dip2px(dip) {
+    const density = ctx.getResources().getDisplayMetrics().density;
+    return Math.round(dip * density);
+}
+
+function createGradientColors() {
+    let colors = [];
+    for (let i = 0; i < 360; i += 10) {
+        let hue = i;
+        let color = android.graphics.Color.HSVToColor([hue, 1, 1]);
+        colors.push(color);
+    }
+    return colors;
+}
+
+let gradientColors = createGradientColors();
+
+function rainbowColor() {
+    let time = java.lang.System.currentTimeMillis() % 10000;
+    let duration = 10000; // 10 секунд для полного градиента
+    let position = (time % duration) / duration;
+    let colorIndex = Math.floor(position * gradientColors.length);
+    return gradientColors[colorIndex];
+}
+
+let window = null;
+let newWindow = null;
+let functionsLayout = null;
+let separatorLayout = null;
+
+function createFirstWindow() {
+    ctx.runOnUiThread(() => {
+        if (window) {
+            window.dismiss();
+            window = null;
+        }
+
+        let layout = new android.widget.LinearLayout(ctx);
+        layout.setOrientation(android.widget.LinearLayout.VERTICAL);
+        layout.setBackgroundColor(android.graphics.Color.TRANSPARENT);
+
+        const screenWidth = ctx.getResources().getDisplayMetrics().widthPixels;
+        const screenHeight = ctx.getResources().getDisplayMetrics().heightPixels;
+        const windowWidth = dip2px(300);
+        const windowHeight = dip2px(30);
+        layout.setLayoutParams(new android.widget.LinearLayout.LayoutParams(windowWidth, windowHeight));
+
+        let textView = new android.widget.TextView(ctx);
+        textView.setText("Test Menu");
+        textView.setTextColor(android.graphics.Color.BLACK);
+        textView.setBackgroundColor(android.graphics.Color.WHITE);
+        layout.addView(textView);
+
+        window = new android.widget.PopupWindow(layout, windowWidth, windowHeight);
+        window.setTouchable(true);
+
+        let posX = (screenWidth - windowWidth) / 2;
+        let posY = (screenHeight - windowHeight) / 2;
+        window.showAtLocation(ctx.getWindow().getDecorView(), android.view.Gravity.NO_GRAVITY, posX, posY);
+
+        let isDragging = false;
+        let initialTouchX, initialTouchY;
+        let windowPosX = posX, windowPosY = posY;
+
+        layout.setOnTouchListener(new android.view.View.OnTouchListener({
+            onTouch: function(view, event) {
+                switch(event.getAction()) {
+                    case android.view.MotionEvent.ACTION_DOWN:
+                        isDragging = false;
+                        initialTouchX = event.getRawX();
+                        initialTouchY = event.getRawY();
+                        break;
+                    case android.view.MotionEvent.ACTION_MOVE:
+                        let deltaX = event.getRawX() - initialTouchX;
+                        let deltaY = event.getRawY() - initialTouchY;
+                        if (Math.abs(deltaX) > 5 || Math.abs(deltaY) > 5) {
+                            isDragging = true;
+                            window.update(
+                                windowPosX + deltaX,
+                                windowPosY + deltaY,
+                                -1,
+                                -1
+                            );
+                        }
+                        break;
+                    case android.view.MotionEvent.ACTION_UP:
+                        if (isDragging) {
+                            windowPosX += event.getRawX() - initialTouchX;
+                            windowPosY += event.getRawY() - initialTouchY;
+                        } else {
+                            if (window) {
+                                showNewWindow();
+                            }
+                        }
+                        isDragging = false;
+                        break;
+                }
+                return true;
+            }
+        }));
+    });
+}
+
+function showNewWindow() {
+    ctx.runOnUiThread(() => {
+        if (newWindow) {
+            newWindow.dismiss();
+            newWindow = null;
+        }
+
+        let newLayout = new android.widget.LinearLayout(ctx);
+        newLayout.setOrientation(android.widget.LinearLayout.VERTICAL);
+        newLayout.setBackgroundColor(android.graphics.Color.GRAY);
+        newLayout.setLayoutParams(new android.widget.LinearLayout.LayoutParams(dip2px(300), dip2px(30)));
+
+        let container = new android.widget.LinearLayout(ctx);
+        container.setOrientation(android.widget.LinearLayout.HORIZONTAL);
+        container.setLayoutParams(new android.widget.LinearLayout.LayoutParams(
+            android.view.ViewGroup.LayoutParams.MATCH_PARENT,
+            dip2px(30)
+        ));
+        container.setBackgroundColor(android.graphics.Color.DKGRAY);
+
+        let closeButton = new android.widget.TextView(ctx);
+        closeButton.setText("×");
+        closeButton.setTextSize(dip2px(20));
+        closeButton.setTextColor(android.graphics.Color.WHITE);
+        closeButton.setLayoutParams(new android.widget.LinearLayout.LayoutParams(
+            dip2px(40),
+            dip2px(30)
+        ));
+        closeButton.setGravity(android.view.Gravity.CENTER);
+        closeButton.setPadding(0, dip2px(-12), 0, 0);
+
+        closeButton.setOnClickListener(new android.view.View.OnClickListener({
+            onClick: function(v) {
+                if (newWindow) {
+                    newWindow.dismiss();
+                    newWindow = null;
+                }
+                createFirstWindow();
+            }
+        }));
+
+        newLayout.addView(container);
+        container.addView(closeButton);
+
+        let scrollView = new android.widget.ScrollView(ctx);
+        scrollView.setLayoutParams(new android.widget.LinearLayout.LayoutParams(
+            android.view.ViewGroup.LayoutParams.MATCH_PARENT,
+            android.view.ViewGroup.LayoutParams.MATCH_PARENT
+        ));
+
+        let mainLayout = new android.widget.LinearLayout(ctx);
+        mainLayout.setOrientation(android.widget.LinearLayout.HORIZONTAL);
+        mainLayout.setLayoutParams(new android.widget.LinearLayout.LayoutParams(
+            android.view.ViewGroup.LayoutParams.MATCH_PARENT,
+            android.view.ViewGroup.LayoutParams.MATCH_PARENT
+        ));
+
+        let categoriesLayout = new android.widget.LinearLayout(ctx);
+        categoriesLayout.setOrientation(android.widget.LinearLayout.VERTICAL);
+        categoriesLayout.setLayoutParams(new android.widget.LinearLayout.LayoutParams(
+            dip2px(100),
+            android.view.ViewGroup.LayoutParams.MATCH_PARENT
+        ));
+        categoriesLayout.setPadding(dip2px(10), 0, dip2px(10), 0);
+
+        function createCategory(name) {
+            let categoryView = new android.widget.TextView(ctx);
+            categoryView.setText(name);
+            categoryView.setTextSize(dip2px(6));
+            categoryView.setTextColor(android.graphics.Color.WHITE);
+            let params = new android.widget.LinearLayout.LayoutParams(dip2px(80), dip2px(30));
+            categoryView.setLayoutParams(params);
+            categoryView.setPadding(dip2px(0), 0, dip2px(0), 0);
+            categoryView.setOnClickListener(new android.view.View.OnClickListener({
+                onClick: function(v) {
+                    updateFunctionsForCategory(name);  // Обновляем функции для текущей категории
+                }
+            }));
+            return categoryView;
+        }
+
+        let categories = ["Combat", "Movem", "Misc", "Other"];
+        categories.forEach((category, index) => {
+            let categoryView = createCategory(category);
+            if (index > 0) {
+                let params = categoryView.getLayoutParams();
+                params.topMargin = dip2px(5);  // Отступ между категориями
+                categoryView.setLayoutParams(params);
+            }
+            categoriesLayout.addView(categoryView);
+        });
+
+        mainLayout.addView(categoriesLayout);
+
+        // Уменьшаем область клика для первого меню
+        let clickAreaWidth = dip2px(5); // Уменьшите значение для уменьшения области клика
+
+        separatorLayout = new android.widget.LinearLayout(ctx);
+        separatorLayout.setOrientation(android.widget.LinearLayout.VERTICAL);
+        separatorLayout.setLayoutParams(new android.widget.LinearLayout.LayoutParams(
+            clickAreaWidth,
+            android.view.ViewGroup.LayoutParams.MATCH_PARENT
+        ));
+
+        // Создаем градиентный фон для полоски
+        let gradientDrawable = new android.graphics.drawable.GradientDrawable();
+        gradientDrawable.setOrientation(android.graphics.drawable.GradientDrawable.Orientation.TOP_BOTTOM);
+        gradientDrawable.setColors(createGradientColors());
+        
+        gradientDrawable.setCornerRadius(dip2px(5)); // Радиус углов
+
+        separatorLayout.setBackground(gradientDrawable);
+
+        mainLayout.addView(separatorLayout);
+
+        // Инициализируем контейнер для функций
+        functionsLayout = new android.widget.LinearLayout(ctx);
+        functionsLayout.setOrientation(android.widget.LinearLayout.VERTICAL);
+        functionsLayout.setLayoutParams(new android.widget.LinearLayout.LayoutParams(
+            android.view.ViewGroup.LayoutParams.MATCH_PARENT,
+            android.view.ViewGroup.LayoutParams.MATCH_PARENT
+        ));
+        functionsLayout.setPadding(dip2px(10), dip2px(10), dip2px(10), dip2px(10));
+        mainLayout.addView(functionsLayout);
+
+        scrollView.addView(mainLayout);
+        newLayout.addView(scrollView);
+
+        function updateFunctionsForCategory(category) {
+            functionsLayout.removeAllViews();  // Очищаем предыдущие функции
+
+            let functions = [];
+            switch (category) {
+                case "Combat":
+                    functions = ["Hitbox ", "Killaura "];
+                    break;
+                case "Movem":
+                    functions = ["Speed ", "Fly "];
+                    break;
+                case "Misc":
+                    functions = ["Airjump ", "NoFall "];
+                    break;
+                case "Other":
+                    functions = ["Soon"];
+                    break;
+            }
+
+            functions.forEach(func => {
+                let funcView = new android.widget.TextView(ctx);
+                funcView.setText(func);
+                funcView.setTextSize(dip2px(6));
+                funcView.setTextColor(android.graphics.Color.WHITE);
+                let params = new android.widget.LinearLayout.LayoutParams(
+                    android.view.ViewGroup.LayoutParams.MATCH_PARENT,
+                    dip2px(30)
+                );
+                funcView.setLayoutParams(params);
+                funcView.setPadding(dip2px(0), dip2px(5), dip2px(0), dip2px(5));
+
+                funcView.setOnClickListener(new android.view.View.OnClickListener({
+                    onClick: function(v) {
+                        executeFunction(func);
+                    }
+                }));
+
+                functionsLayout.addView(funcView);
+            });
+        }
+
+        // Обновляем цвет полоски каждую секунду
+        function updateSeparatorColor() {
+            let gradientDrawable = new android.graphics.drawable.GradientDrawable();
+            gradientDrawable.setOrientation(android.graphics.drawable.GradientDrawable.Orientation.TOP_BOTTOM);
+            gradientDrawable.setColors(createGradientColors());
+            gradientDrawable.setCornerRadius(dip2px(5)); // Радиус углов
+            separatorLayout.setBackground(gradientDrawable);
+        }
+
+        // Обновляем цвет полоски каждую секунду
+        const colorUpdater = new android.os.Handler();
+        const updateColorRunnable = new java.lang.Runnable({
+            run: function() {
+                updateSeparatorColor();
+                colorUpdater.postDelayed(this, 1000); // Обновляем каждую секунду
+            }
+        });
+        colorUpdater.post(updateColorRunnable);
+
+        newWindow = new android.widget.PopupWindow(newLayout, dip2px(300), dip2px(230));
+        newWindow.setTouchable(true);
+        newWindow.showAtLocation(ctx.getWindow().getDecorView(), android.view.Gravity.CENTER, 0, 0);
+    });
+}
+
+function executeFunction(func) {
+    switch (func) {
+        case "Hitbox ":
+    hit = true;
+            break;
+        case "Killaura ":
+            break;
+        case "Speed ":
+    speed = true
+            break;
+        case "Fly ":
+    fly = true;
+            break;
+        case "Airjump ":
+    air = true;
+            break;
+        case "NoFall ":
+    fall = true;
+            break;
+        case "Soon ":
+            break;
+        default:
+            ctx.runOnUiThread(() => {
+                android.widget.Toast.makeText(ctx, "Function not found", android.widget.Toast.LENGTH_SHORT).show();
+            });
+            break;
+    }
+}
+
+// Пример функций, которые будут вызываться по нажатию
+
+function toggleHitbox() {
+    if (!hit) {
+    ctx.runOnUiThread(() => {
+        android.widget.Toast.makeText(ctx, "Hitbox 3b toggled", android.widget.Toast.LENGTH_SHORT).show();
+    });
+
+let target = LocalPlayer.getNearestPlayer(5);
+
+Player.setCollisionSize(target, 3, 3);
+}
+}
+
+function toggleSpeed() {
+    if (!speed) {
+    ctx.runOnUiThread(() => {
+        android.widget.Toast.makeText(ctx, "Speed toggled", android.widget.Toast.LENGTH_SHORT).show();
+    });
+
+LocalPlayer.setVelocityZ(0.7);
+LocalPlayer.setVelocityX(0.7);
+   }
+}
+
+function toggleFly() {
+    if (!fly) {
+    ctx.runOnUiThread(() => {
+        android.widget.Toast.makeText(ctx, "Fly toggled", android.widget.Toast.LENGTH_SHORT).show();
+    });
+
+
+LocalPlayer.setVelocityY(0);
+    }
+}
+
+function toggleAirjump() {
+    if (!air) {
+    ctx.runOnUiThread(() => {
+        android.widget.Toast.makeText(ctx, "Airjump toggled", android.widget.Toast.LENGTH_SHORT).show();
+    });
+
+
+LocalPlayer.setOnGround(true);
+}
+}
+
+function toggleNoFall() {
+    if (!fall) {
+    ctx.runOnUiThread(() => {
+        android.widget.Toast.makeText(ctx, "NoFall toggled", android.widget.Toast.LENGTH_SHORT).show();
+    });
+
+        var playerID = LocalPlayer.getUniqueID();
+        LocalPlayer.setStatusFlag(playerID, 1 << 9, false);
+        }
+}
+
+function onScriptEnabled() {
+    ModuleManager.addModule(module);
+    createFirstWindow();
+}
+
+function onScriptDisabled() {
+    ModuleManager.removeModule(module);
+    if (window) {
+        window.dismiss();
+    }
+    if (newWindow) {
+        newWindow.dismiss();
+    }
+}
+
+function onLevelTick() {
+toggleAirjump()
+toggleFly()
+toggleSpeed()
+toggleHitbox()
+toggleNoFall()
+toggleAirjump()
+}

@@ -1,0 +1,11 @@
+let enabled = false
+let timer = 0
+function onFastTick() { 
+    if (!enabled){return}
+    timer++
+    if (timer < 400) { return } 
+    timer = 0
+    LocalPlayer.click()
+} 
+
+ModuleManager.addModule(new Module("posos",1,1,"Other").setOnToggleListener(function() { enabled = !enabled}))

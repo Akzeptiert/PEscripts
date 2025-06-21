@@ -1,0 +1,70 @@
+const module = new Module("Killaura-Best", true, true, ModuleCategory.COMBAT);
+const mode = new ModeSetting("Mode", ["Multi", "Target"]);
+const distance = new SliderSetting("Distance", [1, 0, 10, 1]);
+const cps = new SliderSetting("CPS", [1, 0, 20, 1]);
+module.addSettings([mode, cps, distance]);
+
+let target;
+let Targett = false;
+let TimeClick = 0;
+
+function onLevelTick() {
+if (module.isActive()) {
+
+if (mode.getCurrentMode() !== "Target") {
+Targett = false;
+}
+            switch (mode.getCurrentMode()) {
+                case "Multi": 
+        let targetr = LocalPlayer.getNearestPlayer(distance.getCurrentValue());
+	
+        let playerID = targetr;
+        
+        	if (playerID == 0 || isFriend(playerID)) {
+		return;
+          	}
+        
+        let distancee = Math.round(LocalPlayer.getDistanceTo(playerID));
+        
+        if (distancee < distance.getCurrentValue()) {
+            TimeClick++; 
+    if (TimeClick < 20 / cps.getCurrentValue()) return;
+            LocalPlayer.attack(playerID);
+                            TimeClick = 0
+                            }
+
+                break;
+                
+                case "Target": 
+                Targett = true;
+	if (target == 0 || isFriend(target)) {
+		return;
+	}
+	
+	    let distan = Math.round(LocalPlayer.getDistanceTo(target));
+    
+    // Если игрок находится на расстоянии 5 блоков или ближе
+    if (distan < distance.getCurrentValue()) {
+    TimeClick++; 
+    if (TimeClick < 20 / cps.getCurrentValue()) return;
+	LocalPlayer.attack(target);
+	    TimeClick = 0
+	    }
+                break;
+}
+}
+}
+
+function onSendPacket(name, address) {
+    if (name == PacketType.INTERACT_PACKET && (Memory.getInt(address, 12) & 0xff) == 2 && Targett) {
+       target = Memory.getInt(address, 12+4)
+    }
+}
+
+function onScriptEnabled() {
+    ModuleManager.addModule(module);
+}
+
+function onScriptDisabled() {
+    ModuleManager.removeModule(module);
+}

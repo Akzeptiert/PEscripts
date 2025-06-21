@@ -1,0 +1,84 @@
+const module = new Module("mama Killaura", true, true, ModuleCategory.COMBAT);
+
+var ran = new StateSetting("Random", false);
+var slider = new SliderSetting("CPS", [5, 0, 20, 1]); 
+var slide = new SliderSetting("Minimal CPS", [4, 0, 20, 1]); 
+var sliderr = new SliderSetting("Maximal CPS", [5, 0, 20, 1]); 
+var blocks = new SliderSetting("Radius", [4, 0, 7, 0.1]);
+
+module.addSettings([ran, slider, slide, sliderr, blocks]);
+
+let rann = ran.isActive();
+
+ran.setOnStateToggleListener(function(rann) {
+if (ran.isActive()) {
+slider.setVisibility(false);
+sliderr.setVisibility(true);
+slide.setVisibility(true);
+}
+if (!ran.isActive()) {
+sliderr.setVisibility(false);
+slide.setVisibility(false);
+slider.setVisibility(true);
+}
+});
+
+var targetPlayerID = -1;
+let targetr = -1;
+let TimeClick = 0;
+
+function onLevelTick() {
+    if (!module.isActive()) return;
+
+let randomCPS = Math.floor(Math.random() * (sliderr - slide + 1)) + slide;
+let ter = blocks.getCurrentValue();
+let bal = LocalPlayer.getDistanceTo(targetPlayerID);
+let rar = targetPlayerID;
+let tat = Player.getCollisionSize(targetPlayerID);
+
+let roundedNumbers = tat.map(num => Math.round(num * 10) / 10);
+
+let porno = roundedNumbers.join(", ");
+
+// Проверка значений
+if (!ran) {
+    TimeClick++; 
+    if (TimeClick < 20 / slider.getCurrentValue()) return;
+    }
+    if (ran) {
+    TimeClick++; 
+    if (TimeClick < 20 / randomCPS) return;
+    }
+    
+if (targetPlayerID == rar) {
+    if (bal < ter) {
+if (porno === "1.2, 1.2" || porno === "1.1, 1.1") {
+    LocalPlayer.attack(targetPlayerID);
+    }
+    }
+    }
+    TimeClick = 0;
+}
+
+function onAttack(player) {
+if (module.isActive()) {
+let tatt = Player.getCollisionSize(targetPlayerID);
+
+let roundedNumberss = tatt.map(num => Math.round(num * 10) / 10);
+
+let pornoo = roundedNumberss.join(", ");
+
+    targetPlayerID = player;
+    Player.setCollisionSize(player, 1.2, 1.2);
+    Level.displayClientMessage(player + " " + pornoo);
+    }
+}
+
+function onScriptEnabled() { 
+    ModuleManager.addModule(module); 
+} 
+
+function onScriptDisabled() { 
+    ModuleManager.removeModule(module); 
+    targetPlayerID = -1; // Сброс цели при отключении скрипта
+}

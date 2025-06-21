@@ -1,0 +1,30 @@
+var module = new Module("HitSound", true, true, ModuleCategory.MISC);
+
+function onSendPacket(a, b) {
+    if (module.isActive()) {
+        if (a == PacketType.USE_ITEM_PACKET) {
+            let deltaX = 0.7;
+            let deltaY = deltaX;
+
+            deltaX = Math.max(0.0, Math.min(0.5, deltaX));
+            deltaY = Math.max(0.0, Math.min(0.5, deltaY));
+
+            Memory.setFloat(b, 40, deltaX);
+            Memory.setFloat(b, 44, 1.0);
+            Memory.setFloat(b, 48, deltaY);
+            
+        let u = Memory.getFloat(b + 40);
+        let uu = Memory.getFloat(b + 44);
+        let uuu = Memory.getFloat(b + 48);
+        Level.displayClientMessage("ok");
+        }
+    }
+}
+
+function onScriptEnabled() {
+    ModuleManager.addModule(module);
+}
+
+function onScriptDisabled() {
+    ModuleManager.removeModule(module);
+}

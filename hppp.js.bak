@@ -1,0 +1,165 @@
+const context = getContext();
+
+let backgroundLayout, distanceBar, redBar;
+let gradientDrawable;
+let colorIndex = 0;
+let timer = 0;
+let tim = 0;
+const ANIMATION_DELAY = 1000; // Задержка в миллисекундах
+
+function onAttack(player) {
+    updateDistanceBar(player);
+}
+
+function updateDistanceBar(player) {
+    if (backgroundLayout && distanceBar && redBar && player) {
+        context.runOnUiThread(new java.lang.Runnable({
+            run: function() {
+                try {
+                    let distance = LocalPlayer.getDistanceTo(player);
+                    let maxDistance = 6;  
+                    let minWidth = dip2px(20);  // Минимальная ширина полоски
+                    let maxWidth = dip2px(120); // Максимальная ширина полоски
+                    
+                    // Рассчитываем ширину красной полоски
+                    let redBarWidth = Math.max(minWidth, maxWidth * (Math.min(distance / maxDistance, 1)));
+                    redBar.getLayoutParams().width = redBarWidth;
+                    redBar.requestLayout();
+                    
+                    // Корректируем положение красной полоски
+                    let redBarParams = new android.widget.LinearLayout.LayoutParams(
+                        redBarWidth, // Ширина красной полоски
+                        dip2px(15)   // Высота
+                    );
+                    redBarParams.gravity = android.view.Gravity.LEFT; // Располагаем по левому краю
+                    redBar.setLayoutParams(redBarParams);
+                } catch (e) {
+                    print("Ошибка при обновлении distanceBar: " + e);
+                }
+            }
+        }));
+    }
+}
+
+function createDistanceBar() {
+    context.runOnUiThread(new java.lang.Runnable({
+        run: function() {
+            try {
+                let layout = new android.widget.LinearLayout(context);
+                layout.setOrientation(android.widget.LinearLayout.VERTICAL);
+                
+                // Создаем фоновый лейаут
+                backgroundLayout = new android.widget.LinearLayout(context);
+                backgroundLayout.setBackgroundColor(android.graphics.Color.parseColor("#55000000")); // Полупрозрачный фон
+                let params = new android.widget.LinearLayout.LayoutParams(
+                    dip2px(120), // Максимальная ширина
+                    dip2px(30)   // Высота полоски
+                );
+                params.gravity = android.view.Gravity.CENTER;
+                backgroundLayout.setLayoutParams(params);
+
+                // Создаем зелёную полоску с закругленными углами и градиентом
+                distanceBar = new android.widget.LinearLayout(context);
+                gradientDrawable = new android.graphics.drawable.GradientDrawable();
+                gradientDrawable.setShape(android.graphics.drawable.GradientDrawable.RECTANGLE);
+                gradientDrawable.setCornerRadius(dip2px(5)); // Закругленные углы
+                distanceBar.setBackground(gradientDrawable);
+                let barParams = new android.widget.LinearLayout.LayoutParams(
+                    dip2px(120), // Фиксированная ширина
+                    dip2px(15)   // Высота
+                );
+                distanceBar.setLayoutParams(barParams);
+
+                // Создаем красную полоску с закругленными углами
+                redBar = new android.widget.LinearLayout(context);
+                let redShape = new android.graphics.drawable.GradientDrawable();
+                redShape.setColor(android.graphics.Color.RED); // Цвет красной полоски
+                redShape.setCornerRadius(dip2px(5)); // Закругленные углы
+                redBar.setBackground(redShape);
+                let redBarParams = new android.widget.LinearLayout.LayoutParams(
+                    dip2px(0), // Начальная ширина (заполняется в зависимости от расстояния)
+                    dip2px(15)   // Высота
+                );
+                redBar.setLayoutParams(redBarParams);
+
+                // Добавляем красную полоску в зелёную
+                distanceBar.addView(redBar);
+
+                // Добавляем зелёную полоску в фоновый лейаут
+                backgroundLayout.addView(distanceBar);
+
+                // Добавляем фоновый лейаут на экран
+                layout.addView(backgroundLayout);
+
+                // Создаем PopupWindow
+                let popupWindow = new android.widget.PopupWindow(layout, android.widget.LinearLayout.LayoutParams.MATCH_PARENT, android.widget.LinearLayout.LayoutParams.MATCH_PARENT);
+                popupWindow.setTouchable(false);
+                popupWindow.setFocusable(false);
+                popupWindow.showAtLocation(context.getWindow().getDecorView(), android.view.Gravity.CENTER, 0, 0);
+
+            } catch (e) {
+                print("Ошибка при создании полоски: " + e);
+            }
+        }
+    }));
+}
+
+function updateGradient() {
+    let colors = [
+android.graphics.Color.RED,
+                    android.graphics.Color.BLUE,
+                    android.graphics.Color.YELLOW,
+                    android.graphics.Color.CYAN,
+                    android.graphics.Color.MAGENTA,
+                    android.graphics.Color.WHITE
+    ];
+
+    if (timer >= colors.length) {
+        timer = 0; // Сброс таймера
+    }
+
+    // Плавно изменяем позицию градиента с помощью анимации
+    let animationDuration = 500; // Длительность анимации в миллисекундах
+
+    let nextColorIndex = (colorIndex + 1) % colors.length;
+
+    // Создаем ValueAnimator для анимации позиции
+    let animator = android.animation.ValueAnimator.ofInt(0, canvasWidth); // canvasWidth - ширина холста
+    animator.setDuration(animationDuration); // Устанавливаем длительность
+
+    animator.addUpdateListener(new android.animation.ValueAnimator.AnimatorUpdateListener({
+        onAnimationUpdate: function (animation) {
+            let progress = animation.getAnimatedValue();
+            // Используем Color() для преобразования цветов
+            gradientDrawable.setGradient(
+                android.graphics.GradientDrawable.Orientation.LEFT_RIGHT, // Градиент слева направо
+                [colors[colorIndex], colors[nextColorIndex]], // Массив цветов
+                [progress / canvasWidth, (progress + 1) / canvasWidth], // Массив позиций
+                android.graphics.Shader.TileMode.CLAMP
+            );
+        }
+    }));
+
+    animator.start(); // Запускаем анимацию
+
+    colorIndex = nextColorIndex;
+    timer++;
+}
+
+updateGradient();
+
+/*function onLevelTick() {
+tim++
+
+if (tim < 120) { return; }
+
+tim = 0;
+}
+*/
+
+function dip2px(dips) {
+    return Math.ceil(dips * context.getResources().getDisplayMetrics().density);
+}
+
+// Вызываем функцию для создания полоски
+createDistanceBar();

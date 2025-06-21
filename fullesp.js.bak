@@ -1,0 +1,391 @@
+const Esp = new Module("FillEsp", true, true, ModuleCategory.MISC);
+
+const ctx = getContext();
+const GL10 = javax.microedition.khronos.opengles.GL10;
+const GLU = android.opengl.GLU;
+
+var alpha = new SliderSetting("Alpha", [1.0, 0, 1, 0.01]);
+
+var gradientSpeed = new SliderSetting("RGB Speed", [1.0, 0.1, 10, 0.1]);
+
+var redValue = new SliderSetting("Color Red", [0.5, 0, 1, 0.01]);
+var greenValue = new SliderSetting("Color Green", [0.5, 0, 1, 0.01]);
+var blueValue = new SliderSetting("Color Blue", [0.5, 0, 1, 0.01]);
+const useGradient = new StateSetting("RGB", true);
+var playerWidthSetting = new SliderSetting("Width", [1.2, 0, 1.3, 0.1]);
+var lineWidth = new SliderSetting("Line Width", [2.0, 0.1, 5.0, 0.1]);
+
+const boxMode = new StateSetting("Box Mode", true);
+const lineMode = new StateSetting("Line Mode", false);
+const skeletonMode = new StateSetting("Skeleton Mode", false);
+
+Esp.addSettings([alpha, redValue, greenValue, blueValue, useGradient, gradientSpeed, playerWidthSetting, boxMode, skeletonMode, lineMode, lineWidth]);
+
+var Render = {
+    getFloatBuffer: function(fArray) {
+        let bBuffer = java.nio.ByteBuffer.allocateDirect(fArray.length * 4);
+        bBuffer.order(java.nio.ByteOrder.nativeOrder());
+
+        let fBuffer = bBuffer.asFloatBuffer();
+        fBuffer.put(fArray);
+        fBuffer.position(0);
+
+        return fBuffer;
+    },
+    getShortBuffer: function(sArray) {
+        let bBuffer = java.nio.ByteBuffer.allocateDirect(sArray.length * 2);
+        bBuffer.order(java.nio.ByteOrder.nativeOrder());
+
+        let sBuffer = bBuffer.asShortBuffer();
+        sBuffer.put(sArray);
+        sBuffer.position(0);
+
+        return sBuffer;
+    },
+    renderer: null,
+    glSurface: null,
+    fov: 90,
+    initted: false,
+    init: function() {
+    this.renderer = new android.opengl.GLSurfaceView.Renderer({
+        onSurfaceCreated: function(gl, config) {
+            gl.glEnable(GL10.GL_TEXTURE_2D);
+            gl.glShadeModel(GL10.GL_SMOOTH);
+            gl.glClearColor(0, 0, 0, 0);
+            gl.glClearDepthf(1);
+            gl.glEnable(GL10.GL_DEPTH_TEST);
+            gl.glDepthFunc(GL10.GL_LEQUAL);
+            gl.glHint(GL10.GL_PERSPECTIVE_CORRECTION_HINT, GL10.GL_NICEST);
+        },
+        onSurfaceChanged: function(gl, width, height) {
+            gl.glMatrixMode(GL10.GL_PROJECTION);
+            gl.glLoadIdentity();
+
+            let fov = Render.readFovFromFile();
+            GLU.gluPerspective(gl, fov * Math.sqrt(Memory.getFloat(Memory.getLevelRenderer(), 0x1440)), ctx.getResources().getDisplayMetrics().widthPixels / ctx.getResources().getDisplayMetrics().heightPixels, .1, 100);
+            
+            gl.glMatrixMode(GL10.GL_MODELVIEW);
+            gl.glLoadIdentity();
+        },
+            onDrawFrame: function(gl) {
+            gl.glMatrixMode(GL10.GL_PROJECTION);
+            gl.glLoadIdentity();
+        
+            let fov = Render.readFovFromFile();
+            GLU.gluPerspective(gl, fov * Math.sqrt(Memory.getFloat(Memory.getLevelRenderer(), 0x1440)), ctx.getResources().getDisplayMetrics().widthPixels / ctx.getResources().getDisplayMetrics().heightPixels, .1, 100);
+            
+            gl.glMatrixMode(GL10.GL_MODELVIEW);
+            gl.glLoadIdentity();
+
+                gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
+                gl.glLoadIdentity();
+                gl.glDisable(GL10.GL_LIGHTING);
+
+                if (getScreenName().equals("hud_screen")) {
+                    try {
+                        let yaw = LocalPlayer.getYaw() % 360;
+                        let pitch = LocalPlayer.getPitch() % 360;
+
+                        let eyeX = LocalPlayer.getPositionX();
+                        let eyeY = LocalPlayer.getPositionY() + 1;
+                        let eyeZ = LocalPlayer.getPositionZ();
+
+                        let dCenterX = Math.sin(yaw / 180 * Math.PI);
+                        let dCenterZ = Math.cos(yaw / 180 * Math.PI);
+                        let dCenterY = Math.sqrt(dCenterX * dCenterX + dCenterZ * dCenterZ) * Math.tan((pitch - 180) / 180 * Math.PI);
+
+                        let centerX = eyeX - dCenterX;
+                        let centerZ = eyeZ + dCenterZ;
+                        let centerY = eyeY - dCenterY;
+
+                        GLU.gluLookAt(gl, eyeX, eyeY, eyeZ, centerX, centerY, centerZ, 0, 1, 0);
+
+                        try {
+                            if (Esp.isActive() && LocalPlayer.isInGame()) {
+                                Level.getAllPlayers().forEach(function(id) {
+                                    if (id != LocalPlayer.getUniqueID()) {
+                                        Render.drawESP(gl, Player.getPositionX(id), Player.getPositionY(id), Player.getPositionZ(id));
+                                    }
+                                });
+                            }
+                        } catch (e) {
+                            print(e + e.lineNumber)
+                        }
+                    } catch (e) {
+                        print("RenderProblem: " + e + e.lineNumber);
+                    }
+                }
+            }
+        });
+
+        ctx.runOnUiThread(() => {
+            Render.glSurface = new android.opengl.GLSurfaceView(ctx);
+            Render.glSurface.setZOrderOnTop(true);
+            Render.glSurface.setEGLConfigChooser(8, 8, 8, 8, 16, 0);
+            Render.glSurface.getHolder().setFormat(android.graphics.PixelFormat.TRANSLUCENT);
+            Render.glSurface.setRenderer(Render.renderer);
+            Render.glSurface.setRenderMode(0);
+
+            ctx.getWindow().getDecorView().addView(Render.glSurface);
+
+            Render.initted = true;
+        });
+    },
+    
+    readFovFromFile: function() {
+    let filePath = "/storage/emulated/0/games/com.mojang/minecraftpe/options.txt";
+    let fovValue = 90;
+    try {
+        let fileInputStream = new java.io.FileInputStream(filePath);
+        let inputStreamReader = new java.io.InputStreamReader(fileInputStream);
+        let bufferedReader = new java.io.BufferedReader(inputStreamReader);
+
+        let line;
+        while ((line = bufferedReader.readLine()) !== null) {
+            if (line.startsWith("gfx_field_of_view")) {
+                fovValue = parseFloat(line.split(":")[1].trim());
+                break;
+            }
+        }
+        bufferedReader.close();
+    } catch (e) {
+        console.error("Error reading fov from file: " + e);
+    }
+    return fovValue;
+},
+
+    drawESP: function(gl, x, y, z) {
+    let playerWidth = playerWidthSetting.getCurrentValue();
+    let playerHeight = 2.4;
+    var time = Date.now() * 0.001 * gradientSpeed.getCurrentValue();
+    var red, green, blue;
+    if (useGradient.isActive()) {
+        red = Math.sin(time * 0.5) * 0.5 + 0.5;
+        green = Math.sin(time * 0.8 + Math.PI * 2 / 3) * 0.5 + 0.5; 
+        blue = Math.sin(time * 1.3 + Math.PI * 4 / 3) * 0.5 + 0.5; 
+    } else {
+        red = redValue.getCurrentValue();
+        green = greenValue.getCurrentValue();
+        blue = blueValue.getCurrentValue();
+    }
+    let yOffset = -0.7; 
+
+    if (boxMode.isActive()) {
+        let vertices = [
+            x - playerWidth / 2, y + yOffset, z - playerWidth / 2,
+            x + playerWidth / 2, y + yOffset, z - playerWidth / 2,
+            x + playerWidth / 2, y + yOffset, z + playerWidth / 2,
+            x - playerWidth / 2, y + yOffset, z + playerWidth / 2,
+            x - playerWidth / 2, y + playerHeight + yOffset, z - playerWidth / 2,
+            x + playerWidth / 2, y + playerHeight + yOffset, z - playerWidth / 2,
+            x + playerWidth / 2, y + playerHeight + yOffset, z + playerWidth / 2,
+            x - playerWidth / 2, y + playerHeight + yOffset, z + playerWidth / 2
+        ];
+        let vertexBuffer = Render.getFloatBuffer(vertices);
+
+        let indices = [
+            // 前面
+            0, 1, 2,
+            2, 3, 0,
+            // 后面
+            4, 5, 6,
+            6, 7, 4,
+            // 顶部
+            1, 5, 6,
+            6, 2, 1,
+            // 底部
+            0, 3, 7,
+            7, 4, 0,
+            // 左侧
+            0, 4, 5,
+            5, 1, 0,
+            // 右侧
+            3, 2, 6,
+            6, 7, 3
+        ];
+        let indexBuffer = Render.getShortBuffer(indices);
+
+        gl.glEnable(GL10.GL_BLEND);
+        gl.glDepthMask(false);
+        gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
+        gl.glColor4f(red, green, blue, alpha.getCurrentValue());
+        gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
+        gl.glVertexPointer(3, GL10.GL_FLOAT, 0, vertexBuffer);
+        gl.glDrawElements(GL10.GL_TRIANGLES, indices.length, GL10.GL_UNSIGNED_SHORT, indexBuffer);
+        gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
+        gl.glDisable(GL10.GL_BLEND);
+        gl.glDepthMask(true);
+    } else if (lineMode.isActive()) {
+        let vertices = [
+            x - playerWidth / 2, y + yOffset, z - playerWidth / 2,
+            x + playerWidth / 2, y + yOffset, z - playerWidth / 2,
+            x + playerWidth / 2, y + yOffset, z + playerWidth / 2,
+            x - playerWidth / 2, y + yOffset, z + playerWidth / 2,
+            x - playerWidth / 2, y + playerHeight + yOffset, z - playerWidth / 2,
+            x + playerWidth / 2, y + playerHeight + yOffset, z - playerWidth / 2,
+            x + playerWidth / 2, y + playerHeight + yOffset, z + playerWidth / 2,
+            x - playerWidth / 2, y + playerHeight + yOffset, z + playerWidth / 2
+        ];
+        let vertexBuffer = Render.getFloatBuffer(vertices);
+        let indices = [
+        // 前面
+        0, 1, 1, 2, 2, 3, 3, 0,
+        // 后面
+        4, 5, 5, 6, 6, 7, 7, 4,
+        // 顶部
+        0, 4, 1, 5, 2, 6, 3, 7,
+        // 底部
+        4, 0, 5, 1, 6, 2, 7, 3
+    ];
+        let indexBuffer = Render.getShortBuffer(indices);
+
+        gl.glEnable(GL10.GL_BLEND);
+        gl.glDepthMask(false);
+        gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
+        gl.glLineWidth(lineWidth.getCurrentValue());
+        gl.glColor4f(red, green, blue, 1.0);
+        gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
+        gl.glVertexPointer(3, GL10.GL_FLOAT, 0, vertexBuffer);
+        gl.glDrawElements(GL10.GL_LINES, indices.length, GL10.GL_UNSIGNED_SHORT, indexBuffer);
+        gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
+        gl.glDisable(GL10.GL_BLEND);
+        gl.glDepthMask(true);
+    } else if (skeletonMode.isActive()) {
+// Пропорции модели Стива
+let playerHeight = 1.8;  // Высота Стива
+let playerWidth = 0.8;   // Ширина туловища
+let armLength = 0.5;     // Длина рук
+let legLength = 0.9;     // Длина ног
+
+// Позиции частей тела
+let headOffset = playerHeight * 0.7;      // Голова
+let shoulderOffset = playerHeight * 0.7;   // Плечи
+let torsoOffset = playerHeight * 0.7;     // Туловище
+let legOffset = 0;                         // Положение ног
+
+// Вершины (координаты частей тела)
+let vertices = [
+    // Голова
+    x + 0.8, y + headOffset + yOffset, z, 
+    x, y + headOffset + yOffset, z, // 0
+
+    // Левое плечо
+    x - playerWidth / 2, y + shoulderOffset + yOffset, z, // 1
+    // Правое плечо
+    x + playerWidth / 2, y + shoulderOffset + yOffset, z, // 2
+
+    // Туловище (центр)
+    x, y + torsoOffset + yOffset, z, // 3
+
+    // Левое бедро
+    x - playerWidth / 4, y + legOffset + yOffset, z, // 4
+    // Правое бедро
+    x + playerWidth / 4, y + legOffset + yOffset, z, // 5
+
+    // Левый локоть
+    x - (playerWidth / 2 + armLength), y + (shoulderOffset + torsoOffset) / 2 + yOffset, z, // 6
+    // Правый локоть
+    x + (playerWidth / 2 + armLength), y + (shoulderOffset + torsoOffset) / 2 + yOffset, z, // 7
+];
+
+let vertexBuffer = Render.getFloatBuffer(vertices);
+
+// Индексы для соединения вершин
+let indices = [
+    // Голова -> Левое плечо
+    0, 1,
+    // Голова -> Правое плечо
+    0, 2,
+    // Левое плечо -> Туловище
+    1, 3,
+    // Правое плечо -> Туловище
+    1, 3,
+    
+    2, 4,
+    // Туловище -> Левое бедро
+    3, 4,
+    // Туловище -> Правое бедро
+    3, 5,
+    // Левое плечо -> Левый локоть
+    1, 6,
+    // Правое плечо -> Правый локоть
+    2, 7,
+];
+
+let indexBuffer = Render.getShortBuffer(indices);
+
+// Отрисовка ESP
+gl.glEnable(GL10.GL_BLEND);
+gl.glDepthMask(false);
+gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
+gl.glColor4f(red, green, blue, alpha.getCurrentValue());
+gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
+gl.glVertexPointer(3, GL10.GL_FLOAT, 0, vertexBuffer);
+gl.glDrawElements(GL10.GL_LINES, indices.length, GL10.GL_UNSIGNED_SHORT, indexBuffer);
+gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
+gl.glDisable(GL10.GL_BLEND);
+gl.glDepthMask(true);
+
+    }
+}};
+
+Esp.setOnToggleListener(function() {
+    if (!LocalPlayer.isInGame()) {
+        print("Join world first!");
+        return;
+    }
+    if (!Render.initted) {
+        Render.init();
+        Render.fov = Render.readFovFromFile();
+    }
+});
+
+function onFastTick() {
+    if (Esp != null && Esp.isActive() && LocalPlayer.isInGame() && Render.initted) {
+        Render.glSurface.requestRender();
+    }
+}
+
+
+//OpenGL ES 1.1x只能用这个LOL
+function generateSphere(vertices, indices, slices, stacks) {
+    let sliceCount = slices + 1;
+    let stackCount = stacks + 1;
+    let radius = 1;
+
+    for (let i = 0; i < sliceCount; i++) {
+        let theta = i * Math.PI / slices;
+        let sinTheta = Math.sin(theta);
+        let cosTheta = Math.cos(theta);
+
+        for (let j = 0; j < stackCount; j++) {
+            let phi = j * 2 * Math.PI / stacks;
+            let sinPhi = Math.sin(phi);
+            let cosPhi = Math.cos(phi);
+
+            let x = radius * cosPhi * sinTheta;
+            let y = radius * cosTheta;
+            let z = radius * sinPhi * sinTheta;
+
+            vertices.push(x, y, z);
+        }
+    }
+
+    for (let i = 0; i < slices; i++) {
+        for (let j = 0; j < stacks; j++) {
+            let first = i * (stackCount) + j;
+            let second = first + stackCount;
+
+            indices.push(first, second, first + 1);
+            indices.push(second, second + 1, first + 1);
+        }
+    }
+}
+
+function onScriptEnabled() { 
+    ModuleManager.addModule(Esp);
+} 
+
+function onScriptDisabled() { 
+    ModuleManager.removeModule(Esp); 
+}

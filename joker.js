@@ -1,0 +1,51 @@
+const module = new Module("Joker", false, false, ModuleCategory.MOVEMENT);
+var button = new ButtonSetting("Отправить", function(view) {
+    getRussianJoke();
+});
+module.addSettings([button]);
+
+function getRussianJoke() {
+    new java.lang.Thread(new java.lang.Runnable({
+        run: function() {
+            try {
+                // Создаём соединение с сайтом
+                var jokeUrl = "https://randstuff.ru/joke/";
+                var jokeConnection = new java.net.URL(jokeUrl).openConnection();
+                jokeConnection.setRequestMethod("GET");
+                jokeConnection.connect();
+
+                var responseCode = jokeConnection.getResponseCode();
+                if (responseCode === java.net.HttpURLConnection.HTTP_OK) {
+                    var inputStream = jokeConnection.getInputStream();
+                    var reader = new java.io.BufferedReader(new java.io.InputStreamReader(inputStream));
+                    var response = "", line;
+                    while ((line = reader.readLine()) !== null) {
+                        response += line;
+                    }
+                    reader.close();
+
+                    // Используем регулярное выражение для поиска шутки в теге <td>
+                    var jokeMatch = response.match(/<td>(.*?)<\/td>/);
+                    if (jokeMatch && jokeMatch[1]) {
+                        var joke = jokeMatch[1].trim();
+                        Level.displayClientMessage("§lШутка: " + joke);
+                    } else {
+                        print("Не удалось найти шутку на странице.");
+                    }
+                } else {
+                    print("Ошибка при получении шутки: " + responseCode);
+                }
+            } catch (e) {
+                print("Ошибка в потоке: " + e.message);
+            }
+        }
+    })).start();
+}
+
+function onScriptEnabled() {
+    ModuleManager.addModule(module);
+}
+
+function onScriptDisabled() {
+    ModuleManager.removeModule(module);
+}

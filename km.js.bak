@@ -1,0 +1,16 @@
+var module = new Module("amm", true, true, ModuleCategory.MISC);
+
+// Эта функция вызывается при активации скрипта
+function onScriptEnabled() {
+    ModuleManager.addModule(module);
+}
+
+// Эта функция вызывается при деактивации скрипта
+function onScriptDisabled() {
+    ModuleManager.removeModule(module);
+}
+
+function onUseItem(x, y, z, itemId, blockId, side) {
+    // Ломаем блок на координатах x, y, z
+    LocalPlayer.destroyBlock(x, y, z,);
+}

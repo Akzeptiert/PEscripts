@@ -1,0 +1,68 @@
+var module = new Module("BedAim", true, true, ModuleCategory.MISC);
+var radarSlider = new SliderSetting("Radar", [1, 1, 10, 1]); // Радиус поиска кровати
+module.addSetting(radarSlider);
+
+function onLevelTick() {
+    if (module.isActive()) {
+        var radius = radarSlider.getCurrentValue();
+        if (radius > 10) {radius = 10}
+
+        var playerX = LocalPlayer.getPositionX() - 1;
+        var playerY = LocalPlayer.getPositionY();
+        var playerZ = LocalPlayer.getPositionZ();
+
+        var minX = Math.floor(playerX - radius);
+        var maxX = Math.floor(playerX + radius);
+        var minY = Math.floor(playerY - radius);
+        var maxY = Math.floor(playerY + radius);
+        var minZ = Math.floor(playerZ - radius);
+        var maxZ = Math.floor(playerZ + radius);
+
+        var closestDistance = Infinity;
+        var foundBed = false;
+        var bedX, bedY, bedZ;
+
+        for (var x = minX; x <= maxX; x++) {
+            for (var y = minY; y <= maxY; y++) {
+                for (var z = minZ; z <= maxZ; z++) {
+                    var blockId = Block.getID(x, y, z);
+
+                    if (blockId > 0) { // Кровать
+                        foundBed = true;
+                        var distance = Math.sqrt(
+                            Math.pow(playerX - x, 2) +
+                            Math.pow(playerY - y, 2) +
+                            Math.pow(playerZ - z, 2)
+                        );
+                        if (distance < closestDistance) {
+                            closestDistance = distance;
+                            bedX = x + 0.5;
+                            bedY = y + 0.5; // Ещё выше для прицеливания
+                            bedZ = z + 0.5;
+                        }
+                    }
+                }
+            }
+        }
+
+        if (foundBed) {
+        Level.displayClientMessage(blockId + " " + bedX + " " + bedY + " " + bedX);
+            var deltaX = bedX - playerX;
+            var deltaY = bedY - playerY;
+            var deltaZ = bedZ - playerZ;
+
+            var yaw = Math.atan2(deltaZ, deltaX) * 180 / Math.PI - 90;
+            var pitch = -Math.atan2(deltaY, Math.sqrt(deltaX * deltaX + deltaZ * deltaZ)) * 180 / Math.PI;
+            
+            LocalPlayer.setRot(yaw, pitch);
+        }
+    }
+}
+
+function onScriptEnabled() {
+    ModuleManager.addModule(module);
+}
+
+function onScriptDisabled() {
+    ModuleManager.removeModule(module);
+}

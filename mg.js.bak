@@ -1,0 +1,21 @@
+const module = new Module("ALL NICKS", true, true, ModuleCategory.MISC);
+var button = new ButtonSetting("Отправить", function(view) {
+    Level.displayClientMessage(nicks());
+});
+module.addSettings([button]);
+
+function nicks() {
+    let players = Level.getAllPlayers();
+    for (let i = 0; i < players.length; i++) {
+        let hah = Player.getNameTag(players[i])
+            return hah;
+    }
+}
+
+function onScriptEnabled() {
+    ModuleManager.addModule(module);
+}
+
+function onScriptDisabled() {
+    ModuleManager.removeModule(module);
+}

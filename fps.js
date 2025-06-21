@@ -1,0 +1,41 @@
+const module = new Module("Fps", true, true, ModuleCategory.MOVEMENT);
+
+let ticks = 0;
+let frames = 0;
+let lastFrameTime = Date.now();
+let timer = 0; // Переменная для отслеживания времени
+
+// Функция, вызываемая каждый раз, когда происходит тик уровня
+function onLevelTick() {
+if (module.isActive()) {
+    ticks++;
+
+    // Отображение тиков каждые 1 секунду
+    if (ticks > 20) { // каждые 20 тиков, то есть 1 раз в секунду
+    ticks = 19;
+        Level.displayClientMessage("Тики: " + ticks);
+    }
+
+    // Проверка времени для обновления FPS
+    const now = Date.now();
+    timer += now - lastFrameTime;
+    lastFrameTime = now;
+
+    // Обновление FPS каждую секунду
+    if (timer > 20) {
+        Level.displayClientMessage("FPS: " + frames);
+        frames = 0; // Сбрасываем FPS
+        timer = 0;  // Сбрасываем таймер
+    }
+    frames++; // Увеличиваем счетчик кадров
+    }
+}
+
+
+function onScriptEnabled() {
+    ModuleManager.addModule(module);
+}
+
+function onScriptDisabled() {
+    ModuleManager.removeModule(module);
+}

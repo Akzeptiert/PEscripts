@@ -1,0 +1,50 @@
+Data.getBoolean("Killaura-loade", !1) && (Data.remove("Killaura-loade"), ModuleManager.addModule(new d("KillauraFix", !1, !1, ModuleCategory.MISC).setOnClickListener((function (e) {
+    if (Module.isActive("KillAura")) {
+
+let mode = Setting.isActive("KillAura", "Target");
+
+let slider = Setting.getCurrentValue("KillAura", "CPS");
+
+let blocks = Module.getSetting("Distance");
+
+if (mode) {
+
+anti = true;
+
+}
+
+}
+
+}))));
+
+let anti = false;
+
+var targetPlayerID = -1;
+let targetr = -1;
+let TimeClick = 0;
+
+function onLevelTick() {
+    if (Module.isActive("KillAura") && anti) {
+
+let ter = blocks.getCurrentValue();
+let bal = LocalPlayer.getDistanceTo(targetPlayerID);
+let rar = targetPlayerID;
+
+    TimeClick++; 
+    if (TimeClick < 20 / slider.getCurrentValue()) return;
+
+if (targetPlayerID == rar) {
+    if (bal < ter) {
+    LocalPlayer.attack(targetPlayerID);
+    }
+    }
+    TimeClick = 0;
+   }
+}
+     
+
+function onAttack(player) {
+    if (Module.isActive("KillAura") && anti) {
+    targetPlayerID = player;
+    }
+}

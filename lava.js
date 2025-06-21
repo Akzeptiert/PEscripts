@@ -1,0 +1,87 @@
+var module = new Module("LavaRadar", true, true, ModuleCategory.MISC);
+var radarSlider = new SliderSetting("Radar", [1, 1, 30, 1]); // Уменьшен максимальный радиус
+module.addSetting(radarSlider);
+
+var lastCheckTime = 0;
+var checkInterval = 2000; // Интервал проверки в миллисекундах
+var checkedBlocks = {}; // Кэш для хранения проверенных блоков
+var chunkSize = 4; // Размер шага проверки по чанкам
+
+function onLevelTick() {
+    var currentTime = new Date().getTime();
+    if (module.isActive() && currentTime - lastCheckTime > checkInterval) {
+        lastCheckTime = currentTime;
+
+        // Получаем радиус поиска из слайдера
+        var radius = radarSlider.getCurrentValue();
+        if (radius > 30) radius = 30; // Устанавливаем ограничение на радиус
+
+        // Получаем позицию игрока
+        var playerX = LocalPlayer.getPositionX();
+        var playerY = LocalPlayer.getPositionY();
+        var playerZ = LocalPlayer.getPositionZ();
+
+        // Определяем границы для поиска лавы
+        var minX = Math.floor(playerX - radius);
+        var maxX = Math.floor(playerX + radius);
+        var minY = Math.floor(playerY - radius);
+        var maxY = Math.floor(playerY + radius);
+        var minZ = Math.floor(playerZ - radius);
+        var maxZ = Math.floor(playerZ + radius);
+
+        // Оптимизация: проверка по чанкам
+        for (var chunkX = minX; chunkX <= maxX; chunkX += chunkSize) {
+            for (var chunkY = minY; chunkY <= maxY; chunkY += chunkSize) {
+                for (var chunkZ = minZ; chunkZ <= maxZ; chunkZ += chunkSize) {
+                    var closestDistance = Infinity; // Начальное значение расстояния до лавы
+                    var foundLava = false;
+
+                    for (var x = chunkX; x < chunkX + chunkSize && x <= maxX; x++) {
+                        for (var y = chunkY; y < chunkY + chunkSize && y <= maxY; y++) {
+                            for (var z = chunkZ; z < chunkZ + chunkSize && z <= maxZ; z++) {
+                                var blockKey = x + "," + y + "," + z;
+
+                                // Пропускаем проверку, если блок уже был проверен
+                                if (checkedBlocks[blockKey]) continue;
+
+                                var blockId = Block.getID(x, y, z);
+                                if (blockId === 56) {
+                                    foundLava = true;
+                                    var distance = Math.sqrt(
+                                        Math.pow(playerX - x, 2) +
+                                        Math.pow(playerY - y, 2) +
+                                        Math.pow(playerZ - z, 2)
+                                    );
+
+                                    if (distance < closestDistance) {
+                                        closestDistance = distance;
+                                    }
+                                } else {
+                                    // Кэширование блока если он не лава
+                                    checkedBlocks[blockKey] = true;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        if (foundLava) {
+        return;
+            // Отображаем сообщение с расстоянием до лавы и окрашенным числом
+            Level.showTipMessage("§l§o§cЛава недалеко: §l§o§a" + Math.round(closestDistance) + " §l§o§aБлоков");
+        } else {
+            // Отображаем сообщение, что лава не найдена
+            Level.showTipMessage("§l§o§aЛава не обнаружена поблизости.");
+        }
+    }
+}
+
+function onScriptEnabled() {
+    ModuleManager.addModule(module);
+}
+
+function onScriptDisabled() {
+    ModuleManager.removeModule(module);
+}

