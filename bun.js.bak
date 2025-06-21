@@ -1,0 +1,72 @@
+const module = new Module("Pass", true, true, ModuleCategory.OTHER);
+var pass = new TextFieldSetting("Pass", "Enter pass", "");
+module.addSettings([pass]);
+// var sprintOnly = new StateSetting("Should sprint", true); module.addSetting(sprintOnly);
+
+var URL = java.net.URL;
+var HttpURLConnection = java.net.HttpURLConnection;
+
+let timer = 0;
+
+// Функция для чтения паролей с сайта
+function getPass() {
+    new java.lang.Thread(new java.lang.Runnable({
+        run: function() {
+            try {
+                var urlString = "https://pastebin.com/raw/Uh9YDVd7";
+                var url = new URL(urlString);
+                var connection = url.openConnection();
+                connection.setRequestMethod("GET");
+                connection.connect();
+
+                var responseCode = connection.getResponseCode();
+                if (responseCode === java.net.HttpURLConnection.HTTP_OK) {
+                    var inputStream = connection.getInputStream();
+                    var reader = new java.io.BufferedReader(new java.io.InputStreamReader(inputStream));
+                    var passwordData = "";
+                    var line;
+
+                    while ((line = reader.readLine()) !== null) {
+                        passwordData += line;
+                    }
+
+                    reader.close();
+
+                    // Разбиваем текст на пароли
+                    var passwords = passwordData.split(", ");
+
+                    // Сравниваем с текстом в поле pass
+
+                    var enteredPass = pass.getText();
+
+                    if (passwords.includes(enteredPass)) {
+                    if (timer < 40) {return;}
+                        print("good");
+                        timer = 0
+                    } else {
+                        print("incorrect pass");
+                    }
+                } else {
+                    print("Ошибка при получении ответа: " + responseCode);
+                }
+            } catch (e) {
+                print("Ошибка в потоке: " + e.message);
+            }
+        }
+    })).start();
+}
+
+function onLevelTick() {
+if (module.isActive()) {
+getPass();
+}
+}
+
+
+function onScriptEnabled() {
+    ModuleManager.addModule(module);
+}
+
+function onScriptDisabled() {
+    ModuleManager.removeModule(module);
+}

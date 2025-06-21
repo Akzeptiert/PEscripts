@@ -1,0 +1,368 @@
+const module = new Module("ChatGPT", true, true, ModuleCategory.MISC);
+
+let startIndex;
+let mathExpression;
+let startIndexx;
+let mathExpressionn;
+let startIndx;
+let mathExpressin;
+
+function onChat(message) {
+if (module.isActive()) {
+
+  let cleanMessage = message.replace(/\§[0-9A-FK-OR]/ig, '');  
+  
+  respondToInsult(cleanMessage);
+  
+    if (cleanMessage.includes(".gpt ")) {
+        preventDefault();
+        }
+
+     if (cleanMessage.includes(".gpt ") && cleanMessage.includes("текст ") || cleanMessage.includes("сгенерируй текст") || cleanMessage.includes("Сгенерируй текст") || cleanMessage.includes("составь текст") || cleanMessage.includes("Текст ") || cleanMessage.includes("Составь текст")) {
+          if (cleanMessage.includes("текст ")) {
+             startIndx = cleanMessage.indexOf("текст ") + 6; // находим, где начинается пример
+    mathExpressin = cleanMessage.substring(startIndex).trim(); // извлекаем всё, что после команды
+    translateText(mathExpressionn, "ru"); // Переводим текст на английский
+    }
+    
+          if (cleanMessage.includes("текст ")) {
+             startIndx = cleanMessage.indexOf("сгенерируй текст ") + 17; // находим, где начинается пример
+    mathExpressin = cleanMessage.substring(startIndex).trim(); // извлекаем всё, что после команды
+    translateText(mathExpressionn, "ru"); // Переводим текст на английский
+    }
+          if (cleanMessage.includes("Сгенерируй текст ")) {
+             startIndx = cleanMessage.indexOf("текст ") + 16; // находим, где начинается пример
+    mathExpressin = cleanMessage.substring(startIndex).trim(); // извлекаем всё, что после команды
+    translateText(mathExpressionn, "ru"); // Переводим текст на английский
+    }
+
+          if (cleanMessage.includes("составь текст ")) {
+             startIndx = cleanMessage.indexOf("составь текст ") + 14; // находим, где начинается пример
+    mathExpressin = cleanMessage.substring(startIndex).trim(); // извлекаем всё, что после команды
+    translateText(mathExpressionn, "ru"); // Переводим текст на английский
+    }
+
+     if (cleanMessage.includes(".gpt ") && cleanMessage.includes("переведи ") || cleanMessage.includes("Переведи ")) {
+     if (cleanMessage.includes("переведи ")) {
+             startIndexx = cleanMessage.indexOf("переведи ") + 5; // находим, где начинается пример
+    mathExpressionn = cleanMessage.substring(startIndex).trim(); // извлекаем всё, что после команды
+    translateText(mathExpressionn, "ru"); // Переводим текст на английский
+    }
+    if (cleanMessage.includes("Переведи ")) {
+            startIndexx = cleanMessage.indexOf("Переведи ") + 5; // находим, где начинается пример
+    mathExpressionn = cleanMessage.substring(startIndex).trim(); // извлекаем всё, что после команды
+    translateText(mathExpressionn, "ru"); // Переводим текст на английский
+    }
+    }
+     
+     
+    if (cleanMessage.includes(".gpt ") && cleanMessage.includes("Реши") || cleanMessage.includes("пример ") || cleanMessage.includes("Пример ") || cleanMessage.includes("реши ") || cleanMessage.includes("реши пример ") || cleanMessage.includes("реши задачу ") || cleanMessage.includes("Реши задачу ") || cleanMessage.includes("посчитай ") || cleanMessage.includes("Посчитай ")) {
+
+        if (cleanMessage.includes("Реши ")) {
+        startIndex = cleanMessage.indexOf("Реши ") + 5; // находим, где начинается пример
+    mathExpression = cleanMessage.substring(startIndex).trim(); // извлекаем всё, что после команды
+    }
+       if (cleanMessage.includes("пример ")) {
+               startIndex = cleanMessage.indexOf("пример ") + 7; // находим, где начинается пример
+    mathExpression = cleanMessage.substring(startIndex).trim(); // извлекаем всё, что после команды
+    }
+       if (cleanMessage.includes("Пример ")) {
+               startIndex = cleanMessage.indexOf("Пример ") + 7; // находим, где начинается пример
+    mathExpression = cleanMessage.substring(startIndex).trim(); // извлекаем всё, что после команды
+    }
+       if (cleanMessage.includes("реши ")) {
+               startIndex = cleanMessage.indexOf("реши ") + 5; // находим, где начинается пример
+    mathExpression = cleanMessage.substring(startIndex).trim(); // извлекаем всё, что после команды
+    }
+       if (cleanMessage.includes("реши пример ")) {
+               startIndex = cleanMessage.indexOf("реши пример ") + 12; // находим, где начинается пример
+    mathExpression = cleanMessage.substring(startIndex).trim(); // извлекаем всё, что после команды
+    }
+       if (cleanMessage.includes("реши задачу ")) {
+               startIndex = cleanMessage.indexOf("реши задачу ") + 12; // находим, где начинается пример
+    mathExpression = cleanMessage.substring(startIndex).trim(); // извлекаем всё, что после команды
+    }
+       if (cleanMessage.includes("Реши задачу ")) {
+               startIndex = cleanMessage.indexOf("Реши задачу") + 12; // находим, где начинается пример
+    mathExpression = cleanMessage.substring(startIndex).trim(); // извлекаем всё, что после команды
+    }
+       if (cleanMessage.includes("посчитай ")) {
+               startIndex = cleanMessage.indexOf("посчитай ") + 9; // находим, где начинается пример
+    mathExpression = cleanMessage.substring(startIndex).trim(); // извлекаем всё, что после команды
+    }
+       if (cleanMessage.includes("Посчитай ")) {
+               startIndex = cleanMessage.indexOf("Посчитай ") + 9; // находим, где начинается пример
+    mathExpression = cleanMessage.substring(startIndex).trim(); // извлекаем всё, что после команды
+    }
+            // Математическое выражение
+            var expression = mathExpression; // Замените на любое выражение
+
+            // URL к API сервиса Math.js, который принимает выражение и возвращает результат
+new java.lang.Thread(new java.lang.Runnable({
+    run: function() {
+        try {
+            var url = new java.net.URL("https://api.mathjs.org/v4/?expr=" + encodeURIComponent(expression));
+            var connection = url.openConnection();
+            connection.setRequestMethod("GET");
+            connection.connect();
+
+            var inputStream = new java.io.InputStreamReader(connection.getInputStream());
+            var bufferedReader = new java.io.BufferedReader(inputStream);
+
+            var response = "";
+            var line;
+            while ((line = bufferedReader.readLine()) !== null) {
+                response += line;
+            }
+
+            bufferedReader.close();
+            Level.displayClientMessage("§l§eChatGPT: §f§l§c" + response);  // Выводим результат на экран
+        } catch (e) {
+            print("Error: " + e);
+        }
+    }
+})).start();
+
+}
+ 
+    if (cleanMessage.includes(".gpt ") && cleanMessage.includes("Привет") || cleanMessage.includes("привет") || cleanMessage.includes("Как дела?") || cleanMessage.includes("Пр") || cleanMessage.includes("ку") || cleanMessage.includes("Ку") || cleanMessage.includes("Здравствуй") || cleanMessage.includes("здравствуй") || cleanMessage.includes("Здрасте") || cleanMessage.includes("здрасте") || cleanMessage.includes("Приветствую") || cleanMessage.includes("приветствую") || cleanMessage.includes("Салют") || cleanMessage.includes("салют") || cleanMessage.includes("Хей") || cleanMessage.includes("хей") || cleanMessage.includes("Добрый день") || cleanMessage.includes("добрый день") || cleanMessage.includes("Добрый вечер") || cleanMessage.includes("добрый вечер") || cleanMessage.includes("Доброе утро") || cleanMessage.includes("доброе утро") || cleanMessage.includes("Хай") || cleanMessage.includes("хай") || cleanMessage.includes("Дарова") || cleanMessage.includes("дарова") || cleanMessage.includes("Доброго времени") || cleanMessage.includes("доброго времени") || cleanMessage.includes("Йо") || cleanMessage.includes("йо") || cleanMessage.includes("Эй") || cleanMessage.includes("эй") || cleanMessage.includes("Здарова") || cleanMessage.includes("здарова") || cleanMessage.includes("Шалом") || cleanMessage.includes("шалом") || cleanMessage.includes("Салам") || cleanMessage.includes("салам") || cleanMessage.includes("Хелло") || cleanMessage.includes("хелло") || cleanMessage.includes("Hello") || cleanMessage.includes("hello") || cleanMessage.includes("Привки") || cleanMessage.includes("привки") || cleanMessage.includes("Добро пожаловать") || cleanMessage.includes("добро пожаловать") || cleanMessage.includes("Как жизнь?") || cleanMessage.includes("как жизнь?") || cleanMessage.includes("Как оно?") || cleanMessage.includes("как оно?") || cleanMessage.includes("Что нового?") || cleanMessage.includes("что нового?") || cleanMessage.includes("Что как?") || cleanMessage.includes("что как?") || cleanMessage.includes("Как сам?") || cleanMessage.includes("как сам?") || cleanMessage.includes("Как поживаешь?") || cleanMessage.includes("как поживаешь?") || cleanMessage.includes("Че как?") || cleanMessage.includes("че как?") || cleanMessage.includes("Как ты?") || cleanMessage.includes("как ты?") || cleanMessage.includes("Как твои дела?") || cleanMessage.includes("как твои дела?") || cleanMessage.includes("Хеллоу") || cleanMessage.includes("хеллоу") || cleanMessage.includes("Добрейший вечерок") || cleanMessage.includes("добрейший вечерок") || cleanMessage.includes("Приветики") || cleanMessage.includes("приветики") || cleanMessage.includes("Прив") || cleanMessage.includes("прив") || cleanMessage.includes("Йоу") || cleanMessage.includes("йоу") || cleanMessage.includes("Даров") || cleanMessage.includes("даров") || cleanMessage.includes("Даровки") || cleanMessage.includes("даровки") || cleanMessage.includes("Приветствую вас") || cleanMessage.includes("приветствую вас") || cleanMessage.includes("Вечер в хату") || cleanMessage.includes("вечер в хату") || cleanMessage.includes("Как настроение?") || cleanMessage.includes("как настроение?") || cleanMessage.includes("Че как жизнь?") || cleanMessage.includes("че как жизнь?") || cleanMessage.includes("Салам алейкум") || cleanMessage.includes("салам алейкум") || cleanMessage.includes("Доброго дня") || cleanMessage.includes("доброго дня") || cleanMessage.includes("Здравствуйте") || cleanMessage.includes("здравствуйте") || cleanMessage.includes("Че как дела?") || cleanMessage.includes("че как дела?") || cleanMessage.includes("Как там ты?") || cleanMessage.includes("как там ты?") || cleanMessage.includes("Как твои?") || cleanMessage.includes("как твои?") || cleanMessage.includes("Что нового у тебя?") || cleanMessage.includes("что нового у тебя?") || cleanMessage.includes("Приветики-пистолетики") || cleanMessage.includes("приветики-пистолетики") || cleanMessage.includes("Че кого?") || cleanMessage.includes("че кого?") || cleanMessage.includes("Че каво?") || cleanMessage.includes("че каво?") || cleanMessage.includes("как дела?") || cleanMessage.includes("Как дела?")) {
+getRandomResponse();
+    }
+        if (cleanMessage.includes(".gpt ") && cleanMessage.includes("что ты умеешь?") || cleanMessage.includes("help") || cleanMessage.includes("что умеешь?") || cleanMessage.includes("Привет") || cleanMessage.includes("?") || cleanMessage.includes("функционал") || cleanMessage.includes("функции")) {
+        Level.displayClientMessage("§l§eChatGPT: §f§l§c Я Умею:");
+        Level.displayClientMessage("§l§eChatGPT: §f§l§c Решать математические примеры");
+        Level.displayClientMessage("§l§eChatGPT: §f§l§c Отвечать на воросы");
+        Level.displayClientMessage("§l§eChatGPT: §f§l§c Советовать");
+        Level.displayClientMessage("§l§eChatGPT: §f§l§c И многое другое");
+    }
+  }
+}
+
+const responses = [
+    "Привет!",
+    "Здравствуйте!",
+    "Приветствую!",
+    "Хей!",
+    "Привет, как дела?",
+    "Салют!",
+    "Добрый день!",
+    "Привет, рад тебя видеть!",
+    "Как жизнь?",
+    "Привет, что нового?",
+    "Здравствуй, как ты?",
+    "Привет, дружище!",
+    "Привет, как настроение?",
+    "Добро пожаловать!",
+    "Привет, чем занимаешься?",
+    "Хай!",
+    "Привет, как твои дела?",
+    "Привет, что у тебя интересного?",
+    "Привет, как прошел день?",
+    "Привет, рад тебя слышать!",
+    "Привет, как ты сегодня?",
+    "Привет, что ты думаешь?",
+    "Привет, как ты проводишь время?",
+    "Привет, что у тебя на уме?",
+    "Привет, как идет жизнь?",
+    "Привет, расскажи что-нибудь интересное!",
+    "Привет, какие планы на сегодня?",
+    "Привет, как твои успехи?",
+    "Привет, что нового в твоей жизни?",
+    "Привет, чем могу помочь?",
+    "Привет, как настроение сегодня?",
+    "Привет, какие новости?"
+];
+
+// Функция для выбора случайного ответа
+function getRandomResponse() {
+
+    // Генерируем случайный индекс
+    const randomIndex = Math.floor(Math.random() * 30);
+    
+    // Извлекаем ответ по индексу
+    const response = responses[randomIndex];
+    
+    Level.displayClientMessage("§l§eChatGPT: §f§l§c" + response)
+}
+
+const insults = [
+    { word: "долбаный", response: "Я стараюсь быть лучше, чем это." },
+    { word: "ублюдок", response: "Каждый имеет право на своё мнение." },
+    { word: "тупица", response: "У всех бывают трудные дни." },
+    { word: "даун", response: "У всех бывают трудные дни." },
+    { word: "мудак", response: "Я предпочитаю конструктивный диалог." },
+    { word: "глупец", response: "Возможно, нам стоит поговорить об этом." },
+    { word: "недоумок", response: "Давай лучше обсудим что-то более позитивное." },
+    { word: "козел", response: "Я не собираюсь опускаться до этого уровня." },
+    { word: "гад", response: "Согласен, иногда я тоже не идеален." },
+    { word: "придурок", response: "Слово – это сила, давай использовать её мудро." },
+    { word: "хрен", response: "Давайте поговорим о чем-то более интересном." },
+    { word: "тварь", response: "Я предпочитаю уважение в разговоре." },
+    { word: "скотина", response: "Понимаю, у всех бывают сложности." },
+    { word: "подонок", response: "Как насчет более конструктивного подхода?" },
+    { word: "дебил", response: "Может, обсудим что-то более позитивное?" },
+    { word: "гнида", response: "Я не собираюсь участвовать в оскорблениях." },
+    { word: "баран", response: "Лучше обсудим что-то полезное." },
+    { word: "тупой", response: "У всех бывают неудачные моменты." },
+    { word: "свинья", response: "Давайте общаться вежливо." },
+    { word: "жопа", response: "Не вижу смысла в таких словах." },
+    { word: "черт", response: "Можем обсудить что-то более важное." },
+    { word: "гниль", response: "Я предпочитаю позитивный подход." },
+    { word: "задница", response: "Как насчет конструктивной критики?" },
+    { word: "урод", response: "Все заслуживают уважения." },
+    { word: "идиот", response: "Слова могут ранить, давай быть добрее." },
+    { word: "лузер", response: "Жизнь слишком коротка для негативных слов." },
+    { word: "пидор", response: "Каждый достоин уважения." },
+    { word: "мразь", response: "Обсудим что-то, что сделает нас лучше." },
+    { word: "псих", response: "Все мы люди, давай общаться лучше." },
+    { word: "параша", response: "Я предпочитаю позитивные разговоры." },
+    { word: "сучка", response: "Можем говорить без оскорблений?" },
+    { word: "дурак", response: "Я уверен, что есть лучшие слова." },
+    { word: "бля", response: "Давайте сосредоточимся на чем-то более важном." },
+    { word: "блин", response: "Давай обсудим, что тебя беспокоит." },
+    { word: "сучара", response: "Я не поддерживаю подобный язык." },
+    { word: "долбаеб", response: "Вместо оскорблений лучше поговорить." },
+    { word: "мутный", response: "Все имеют право на свое мнение." },
+    { word: "падла", response: "Слова имеют значение, давай уважать друг друга." },
+    { word: "сраный", response: "Понимаю, это может быть сложно." },
+    { word: "гаденыш", response: "Давай лучше найдем общий язык." },
+    { word: "мразотный", response: "Все заслуживают понимания." },
+    { word: "жадина", response: "Обсудим, что тебя беспокоит." },
+    { word: "слабак", response: "У каждого есть свои сильные и слабые стороны." },
+    { word: "пустышка", response: "Как насчет конструктивной беседы?" },
+    { word: "покер", response: "Я не собираюсь участвовать в этом." },
+    { word: "задрот", response: "У всех есть свои увлечения." },
+    { word: "параша", response: "Давайте поговорим о чем-то более важном." },
+    { word: "недоделка", response: "Все учатся и развиваются." },
+    { word: "долба", response: "Понимаю, это может быть трудно." },
+    { word: "клоун", response: "Давай поговорим об этом с уважением." },
+    { word: "чучело", response: "Я предпочитаю конструктивный подход." },
+    { word: "глупыш", response: "У всех бывают трудные времена." },
+    { word: "долгожитель", response: "Можем обсудить что-то более важное?" },
+    { word: "гадство", response: "Слова имеют значение, давай уважать друг друга." },
+    { word: "блядь", response: "Давайте сосредоточимся на позитиве." },
+    { word: "мудозвон", response: "Согласен, иногда бывают сложные моменты." },
+    { word: "срака", response: "Как насчет более уважительного общения?" },
+    { word: "неудачник", response: "Каждый имеет право на свою точку зрения." },
+    { word: "тварь", response: "Я предпочитаю конструктивный диалог." },
+    { word: "дебил", response: "Лучше поговорим о чем-то более важном." },
+    { word: "позор", response: "Обсудим что-то, что поможет всем." },
+    { word: "косорыл", response: "Все мы ошибаемся, это нормально." },
+    { word: "недоумок", response: "Каждый достоин уважения." },
+    { word: "недостаток", response: "Как насчет более конструктивного подхода?" },
+    { word: "клоун", response: "Давай лучше обсудим что-то позитивное." },
+    { word: "чурка", response: "Все мы люди, давай общаться лучше." },
+    { word: "недоумок", response: "Все заслуживают понимания." },
+    { word: "долбань", response: "Я стараюсь поддерживать позитивный настрой." },
+    { word: "долгожитель", response: "Слова имеют значение, давай уважать друг друга." },
+    { word: "долбанка", response: "Как насчет конструктивной беседы?" },
+    { word: "костер", response: "У всех бывают трудные времена." },
+    { word: "психопат", response: "Я не поддерживаю подобный язык." },
+    { word: "помойка", response: "Согласен, иногда сложно." },
+    { word: "мусор", response: "Лучше обсудим, что тебя беспокоит." },
+    { word: "труп", response: "Давай лучше поговорим о чем-то положительном." },
+    { word: "гнилая", response: "Как насчет позитивного подхода?" },
+    { word: "холера", response: "У каждого есть право на свое мнение." },
+    { word: "жжж", response: "Я предпочитаю конструктивный подход." },
+    { word: "большой", response: "Все мы можем учиться на своих ошибках." },
+    { word: "задница", response: "Лучше поговорим о чем-то более важном." },
+    { word: "глупец", response: "Давайте сосредоточимся на позитиве." },
+    { word: "шизик", response: "Каждый имеет право на свою точку зрения." },
+    { word: "бараны", response: "Как насчет уважительного общения?" },
+    { word: "долгожитель", response: "Все мы люди, давай общаться лучше." },
+    { word: "пудель", response: "Я стараюсь быть позитивным." },
+];
+
+function respondToInsult(message) {
+    let response = "Какой-то необычный разговор.";
+    let insultFound = false;
+
+    // Перебираем все оскорбления
+    insults.forEach(insult => {
+        if (message.includes(insult.word)) {
+            response = insult.response;
+            insultFound = true;
+            Level.displayClientMessage("§l§eChatGPT: §f§l§c" + response);
+        }
+    });
+
+    // Если не нашли оскорбления, можно добавить универсальный ответ
+    return response;
+}
+
+function translateText(text, targetLanguage) {
+    new java.lang.Thread(new java.lang.Runnable({
+        run: function() {
+            try {
+                var urlString = "https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=" + targetLanguage + "&dt=t&q=" + encodeURIComponent(text);
+                var url = new java.net.URL(urlString);
+                var connection = url.openConnection();
+                connection.setRequestMethod("GET");
+                connection.connect();
+
+                var responseCode = connection.getResponseCode();
+                if (responseCode === java.net.HttpURLConnection.HTTP_OK) {
+                    var inputStream = connection.getInputStream();
+                    var reader = new java.io.BufferedReader(new java.io.InputStreamReader(inputStream));
+
+                    var response = "";
+                    var line;
+                    while ((line = reader.readLine()) !== null) {
+                        response += line;
+                    }
+                    reader.close();
+
+                    // API возвращает ответ в виде массива, нужно извлечь перевод
+                    var translatedText = JSON.parse(response)[0][0][0];
+                    Level.displayClientMessage("§l§eChatGPT: §f§l§cПереведённый текст: " + translatedText);
+                } else {
+                   // print("Ошибка при запросе к API: " + responseCode);
+                }
+            } catch (e) {
+                //print("Ошибка: " + e.message);
+            }
+        }
+    })).start();
+}
+
+function generateText(prompt) {
+    new java.lang.Thread(new java.lang.Runnable({
+        run: function() {
+            try {
+                var urlString = "https://api.some-text-generation-service.com/generate?prompt=" + encodeURIComponent(prompt);
+                var url = new java.net.URL(urlString);
+                var connection = url.openConnection();
+                connection.setRequestMethod("GET");  // Или "POST" в зависимости от сервиса
+                connection.connect();
+
+                var responseCode = connection.getResponseCode();
+                if (responseCode === java.net.HttpURLConnection.HTTP_OK) {
+                    var inputStream = connection.getInputStream();
+                    var reader = new java.io.BufferedReader(new java.io.InputStreamReader(inputStream));
+
+                    var response = "";
+                    var line;
+                    while ((line = reader.readLine()) !== null) {
+                        response += line;
+                    }
+                    reader.close();
+
+                    // Печатаем сгенерированный текст
+                    Level.displayClientMessage("§l§eChatGPT: §f§l§cСгенерированный текст: " + response);
+                } else {
+                 //   print("Ошибка при запросе к API: " + responseCode);
+                }
+            } catch (e) {
+            //    print("Ошибка: " + e.message);
+            }
+        }
+    })).start();
+}
+
+function onScriptEnabled() {
+    ModuleManager.addModule(module);
+}
+
+function onScriptDisabled() {
+    ModuleManager.removeModule(module);
+}

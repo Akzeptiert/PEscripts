@@ -1,0 +1,108 @@
+const module = new Module("F", true, true, ModuleCategory.MOVEMENT);
+
+var nearestBlock = null;
+var isScanning = false;
+var scanTimer = 0;
+var hoh = 0;
+var hasJumped = false;
+var jumpp = false;
+var jumppp = false;
+
+function findNearestBlock(playerX, playerY, playerZ) {
+    var radius = 4;
+    var closestBlock = null;
+    var closestDistance = Infinity;
+    
+        var minX = Math.floor(playerX - radius);
+        var maxX = Math.floor(playerX + radius);
+        var minY = Math.floor(playerY - radius);
+        var maxY = Math.floor(playerY + radius);
+        var minZ = Math.floor(playerZ - radius);
+        var maxZ = Math.floor(playerZ + radius);
+
+        for (var x = minX; x <= maxX; x++) {
+            for (var y = minY; y <= maxY; y++) {
+                for (var z = minZ; z <= maxZ; z++) {
+                var blockId = Block.getID(x, y, z);
+                if (blockId != 0) { // Если это не воздух
+                        var distance = Math.sqrt(
+                            Math.pow(playerX - x, 2) +
+                            Math.pow(playerY - y, 2) +
+                            Math.pow(playerZ - z, 2)
+                        );
+                    if (distance < closestDistance) {
+                        closestBlock = { x: x, y: y, z: z };
+                        closestDistance = distance;
+                    }
+                }
+            }
+        }
+    }
+
+    return closestBlock;
+}
+
+function autoMove() {
+    if (nearestBlock != 0) {
+        var playerX = LocalPlayer.getPositionX();
+        var playerY = LocalPlayer.getPositionY();
+        var playerZ = LocalPlayer.getPositionZ();
+
+        var dx = nearestBlock.x - playerX;
+        var dy = nearestBlock.y - playerY;
+        var dz = nearestBlock.z - playerZ;
+
+     if (distance > 0.5) {
+        var yaw = Math.atan2(dz, dx) * 180 / Math.PI;
+        var pitch = -Math.atan2(dy, Math.sqrt(dx * dx + dz * dz)) * 180 / Math.PI;
+
+        LocalPlayer.setRot(yaw, pitch);
+        }
+
+        var isMoving = Math.abs(dx) > 0.1 || Math.abs(dz) > 0.1;
+
+        if (dy > 1 && dy <= 2) {
+        jumppp = true
+            if (isMoving) {
+            jumpp = true 
+                LocalPlayer.setMoveButtonStatus(MoveButton.JUMP, jumppp);
+                hasJumped = true;
+                jumpTimer = jumpCooldown; // Установить таймер на прыжок
+            }
+        } else {
+            if (isMoving) {
+                LocalPlayer.setMoveButtonStatus(MoveButton.FORWARD, jumpp);
+            } else if (hasJumped) {
+            jumppp = false
+            jumpp = false
+                LocalPlayer.setMoveButtonStatus(MoveButton.FORWARD, jumpp);
+                hasJumped = false;
+            }
+        }
+    }
+}
+
+function onLevelTick() {
+    if (module.isActive()) {
+        scanTimer++;
+        hoh++;
+
+    if (scanTimer < 40) { return; } 
+            nearestBlock = findNearestBlock(LocalPlayer.getPositionX(), LocalPlayer.getPositionY(), LocalPlayer.getPositionZ());
+            scanTimer = 0; // Сброс таймера
+
+    if (hoh < 20) { return; } 
+        if (nearestBlock != 0) {
+            autoMove();
+        }
+        hoh = 0;
+    }
+}
+
+function onScriptEnabled() {
+    ModuleManager.addModule(module);
+}
+
+function onScriptDisabled() {
+    ModuleManager.removeModule(module);
+}

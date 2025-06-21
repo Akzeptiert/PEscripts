@@ -1,0 +1,183 @@
+const tracers = new Module("Tracers CrossHair", true, true, ModuleCategory.MISC);
+const alpha = new SliderSetting("Alpha", [1.0, 0, 1, 0.01]);
+const size = new SliderSetting("Arrow Size", [5, 1, 10, 0.1]);
+const colorR = new SliderSetting("Color Red", [0.5, 0, 1, 0.01]);
+const colorG = new SliderSetting("Color Green", [0.5, 0, 1, 0.01]);
+const colorB = new SliderSetting("Color Blue", [0.5, 0, 1, 0.01]);
+const useGradient = new StateSetting("RGB", true);
+var gradientSpeed = new SliderSetting("RGB Speed", [1.0, 0.1, 10, 0.1]);
+const continuousRendering = new StateSetting("TPS+", false);
+
+const ctx = getContext();
+const GL10 = javax.microedition.khronos.opengles.GL10;
+const GLU = android.opengl.GLU;
+
+var Render = {
+    getFloatBuffer: function(fArray) {
+        let bBuffer = java.nio.ByteBuffer.allocateDirect(fArray.length * 4);
+        bBuffer.order(java.nio.ByteOrder.nativeOrder());
+
+        let fBuffer = bBuffer.asFloatBuffer();
+        fBuffer.put(fArray);
+        fBuffer.position(0);
+
+        return fBuffer;
+    },
+    renderer: null,
+    glSurface: null,
+    initted: false,
+    init: function() {
+        this.renderer = new android.opengl.GLSurfaceView.Renderer({
+            onSurfaceCreated: function(gl, config) {
+                gl.glEnable(GL10.GL_TEXTURE_2D);
+                gl.glShadeModel(GL10.GL_SMOOTH);
+                gl.glClearColor(0, 0, 0, 0);
+                gl.glClearDepthf(1);
+                gl.glEnable(GL10.GL_DEPTH_TEST);
+                gl.glDepthFunc(GL10.GL_LEQUAL);
+                gl.glHint(GL10.GL_PERSPECTIVE_CORRECTION_HINT, GL10.GL_NICEST);
+            },
+            onSurfaceChanged: function(gl, width, height) {
+                gl.glMatrixMode(GL10.GL_PROJECTION);
+                gl.glLoadIdentity();
+                GLU.gluPerspective(gl, 90, width / height, 0.1, 100);
+                gl.glMatrixMode(GL10.GL_MODELVIEW);
+                gl.glLoadIdentity();
+            },
+            onDrawFrame: function(gl) {
+                gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
+                gl.glLoadIdentity();
+
+                if (getScreenName().equals("hud_screen")) {
+                    try {
+                        if (tracers.isActive() && LocalPlayer.isInGame()) {
+                            const players = Level.getAllPlayers();
+                            const eyeX = LocalPlayer.getPositionX();
+                            const eyeY = LocalPlayer.getPositionY() + 1; // Уровень глаз
+                            const eyeZ = LocalPlayer.getPositionZ();
+                            const centerX = ctx.getResources().getDisplayMetrics().widthPixels / 2;
+                            const centerY = ctx.getResources().getDisplayMetrics().heightPixels / 2;
+                            const maxDistance = 3; // Максимальное расстояние от центра в сантиметрах
+
+                            players.forEach(function(id) {
+                                if (id != LocalPlayer.getUniqueID()) {
+                                    const playerX = Player.getPositionX(id);
+                                    const playerY = Player.getPositionY(id);
+                                    const playerZ = Player.getPositionZ(id);
+
+                                    // Вычисление направления к игроку
+                                    const deltaX = playerX - eyeX;
+                                    const deltaY = playerY - eyeY;
+                                    const deltaZ = playerZ - eyeZ;
+
+                                    const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ);
+                                    
+                                    // Нормализация направления
+                                    const normX = deltaX / distance;
+                                    const normY = deltaY / distance;
+                                    const normZ = deltaZ / distance;
+
+                                    // Позиция стрелки
+                                    const arrowX = eyeX + normX * 10; // Увеличить длину стрелки
+                                    const arrowY = eyeY + normY * 10; // Увеличить длину стрелки
+                                    const arrowZ = eyeZ + normZ * 10; // Увеличить длину стрелки
+
+                                    // Вычисление 2D координат для стрелки
+                                    const screenX = (centerX + (arrowX / arrowZ) * 500);
+                                    const screenY = (centerY + (arrowY / arrowZ) * 500);
+
+                                    // Ограничение стрелок в пределах 3 см
+                                    if (Math.abs(screenX - centerX) <= maxDistance && Math.abs(screenY - centerY) <= maxDistance) {
+                                        Render.drawArrow(gl, screenX, screenY);
+                                    }
+                                }
+                            });
+                        }
+                    } catch (e) {
+                        print("RenderProblem: " + e);
+                    }
+                }
+            }
+        });
+
+        ctx.runOnUiThread(() => {
+            Render.glSurface = new android.opengl.GLSurfaceView(ctx);
+            Render.glSurface.setZOrderOnTop(true);
+            Render.glSurface.setEGLConfigChooser(8, 8, 8, 8, 16, 0);
+            Render.glSurface.getHolder().setFormat(android.graphics.PixelFormat.TRANSLUCENT);
+            Render.glSurface.setRenderer(Render.renderer);
+
+            if (continuousRendering.isActive()) {
+                Render.glSurface.setRenderMode(android.opengl.GLSurfaceView.RENDERMODE_CONTINUOUSLY);
+            } else {
+                Render.glSurface.setRenderMode(android.opengl.GLSurfaceView.RENDERMODE_WHEN_DIRTY);
+            }
+
+            ctx.getWindow().getDecorView().addView(Render.glSurface);
+            Render.initted = true;
+        });
+    },
+    
+    readFovFromFile: function() {
+        let filePath = "/storage/emulated/0/games/com.mojang/minecraftpe/options.txt";
+        let fovValue = 90;
+        try {
+            let fileInputStream = new java.io.FileInputStream(filePath);
+            let inputStreamReader = new java.io.InputStreamReader(fileInputStream);
+            let bufferedReader = new java.io.BufferedReader(inputStreamReader);
+
+            let line;
+            while ((line = bufferedReader.readLine()) !== null) {
+                if (line.startsWith("gfx_field_of_view")) {
+                    fovValue = parseFloat(line.split(":")[1].trim());
+                    break;
+                }
+            }
+            bufferedReader.close();
+        } catch (e) {
+            console.error("Error reading fov from file: " + e);
+        }
+        return fovValue;
+    },
+
+    drawArrow: function(gl, x, y) {
+        const sizeValue = size.getCurrentValue();
+
+        gl.glEnable(GL10.GL_BLEND);
+        gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
+        gl.glColor4f(colorR.getCurrentValue(), colorG.getCurrentValue(), colorB.getCurrentValue(), alpha.getCurrentValue());
+
+        // Рисуем стрелку
+        gl.glBegin(GL10.GL_TRIANGLES);
+            gl.glVertex2f(x, y - sizeValue); // Нижняя точка
+            gl.glVertex2f(x - sizeValue / 2, y + sizeValue); // Левая точка
+            gl.glVertex2f(x + sizeValue / 2, y + sizeValue); // Правая точка
+        gl.glEnd();
+    }
+};
+
+tracers.setOnToggleListener(function() { 
+    if (!LocalPlayer.isInGame()) { 
+        print("Join world first!"); 
+        return; 
+    }
+    if (!Render.initted) { 
+        Render.init(); 
+    }
+    Render.glSurface.requestRender();
+});
+
+function onFastTick() {
+    if (tracers != null && tracers.isActive() && LocalPlayer.isInGame() && Render.initted) {
+        Render.glSurface.requestRender();
+    }
+}
+
+function onScriptEnabled() { 
+    tracers.addSettings([alpha, size, colorR, colorG, colorB, useGradient, gradientSpeed, continuousRendering]);
+    ModuleManager.addModule(tracers);
+}
+
+function onScriptDisabled() { 
+    ModuleManager.removeModule(tracers); 
+}

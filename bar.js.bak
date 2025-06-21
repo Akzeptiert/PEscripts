@@ -1,0 +1,78 @@
+const ctx = getContext();
+
+function createAndShowBackground() {
+    ctx.runOnUiThread(new java.lang.Runnable({
+        run: function() {
+            try {
+                // Создание LinearLayout для размещения View
+                let linearLayout = new android.widget.LinearLayout(ctx);
+                linearLayout.setOrientation(android.widget.LinearLayout.VERTICAL);
+                
+                // Создание View для фона
+                let backgroundView = new android.view.View(ctx);
+                
+                // Установка параметров для фона
+                let backgroundParams = new android.widget.LinearLayout.LayoutParams(
+                    dip2px(100), // Ширина фона
+                    dip2px(50)  // Высота фона
+                );
+                backgroundView.setLayoutParams(backgroundParams);
+                
+                // Настройка фона как полупрозрачный серый
+                let shape = new android.graphics.drawable.GradientDrawable();
+                shape.setShape(android.graphics.drawable.GradientDrawable.RECTANGLE);
+                shape.setColor(android.graphics.Color.argb(150, 128, 128, 128)); // Полупрозрачный серый
+                backgroundView.setBackgroundDrawable(shape);
+                
+                // Добавление фона в LinearLayout
+                linearLayout.addView(backgroundView);
+                
+                // Создание PopupWindow и отображение фона
+                let popupWidth = dip2px(300);  // Ширина PopupWindow
+                let popupHeight = dip2px(200); // Высота PopupWindow
+                let popupWindow = new android.widget.PopupWindow(
+                    linearLayout,
+                    popupWidth,
+                    popupHeight,
+                    false // Флаг для не включения фокуса
+                );
+                
+                // Позиционирование в центре экрана с учетом смещения
+                let displayMetrics = ctx.getResources().getDisplayMetrics();
+                let screenWidth = displayMetrics.widthPixels;
+                let screenHeight = displayMetrics.heightPixels;
+                
+                let xOffset = (screenWidth - popupWidth) / 2 - dip2px(250); // Смещение влево на 3 см
+                let yOffset = (screenHeight - popupHeight) / 2 - dip2px(-50); // Смещение вверх на 3 см
+                popupWindow.showAtLocation(ctx.getWindow().getDecorView(), android.view.Gravity.TOP | android.view.Gravity.RIGHT, 0, 450);
+
+
+                // Настроить PopupWindow для предотвращения закрытия по касанию
+                popupWindow.setFocusable(true); // Сделать фокусируемым
+                popupWindow.setTouchable(true); // Сделать касание обработанным
+                popupWindow.setOutsideTouchable(false); // Не закрывать при касании вне PopupWindow
+
+                showToast("Background should be displayed and not disappear on touch", 5000);
+            } catch (e) {
+                showToast("Error: " + e.toString(), 5000);
+            }
+        }
+    }));
+}
+
+function dip2px(dp) {
+    return Math.ceil(ctx.getResources().getDisplayMetrics().density * dp);
+}
+
+function showToast(message, duration) {
+    ctx.runOnUiThread(new java.lang.Runnable({
+        run: function() {
+            let toast = android.widget.Toast.makeText(ctx, message, android.widget.Toast.LENGTH_LONG);
+            toast.setDuration(duration);
+            toast.show();
+        }
+    }));
+}
+
+// Вызов функции для проверки
+createAndShowBackground();

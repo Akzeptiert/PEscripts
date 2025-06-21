@@ -1,0 +1,205 @@
+const module = new Module("AntiCheat", true, true, ModuleCategory.COMBAT);
+
+let invisibleHits = 0;
+let lastAttackedPlayer = null;
+let yawDifference;
+let pitchDifference;
+let timer = 0;
+
+function normalizeAngle(angle) {
+    return (angle % 360 + 360) % 360;
+}
+
+function isPlayerInView(player) {
+    if (module.isActive()) {
+        // Получаем текущие yaw и pitch
+        let yaw = LocalPlayer.getYaw() % 360;
+        let pitch = LocalPlayer.getPitch() % 360;
+
+        // Получаем позиции врага
+        let enemyX = Player.getPositionX(player); 
+        let enemyY = Player.getPositionY(player);
+        let enemyZ = Player.getPositionZ(player);
+
+        // Рассчитываем относительные координаты цели от позиции игрока
+        let deltaX = enemyX - LocalPlayer.getPositionX();
+        let deltaY = (enemyY + 1.0) - (LocalPlayer.getPositionY() + 1); 
+        let deltaZ = enemyZ - LocalPlayer.getPositionZ();
+
+        let horizontalDistance = Math.sqrt(deltaX * deltaX + deltaZ * deltaZ);
+
+        // Вычисляем необходимые yaw и pitch для прицеливания на врага
+        let targetYaw = Math.atan2(-deltaX, deltaZ) * (180 / Math.PI);
+        let targetPitch = -Math.atan2(deltaY, horizontalDistance) * (180 / Math.PI);
+
+        // Нормализуем текущие и целевые углы
+        let normalizedCurrentYaw = normalizeAngle(yaw);
+        let normalizedCurrentPitch = normalizeAngle(pitch);
+        let normalizedTargetYaw = normalizeAngle(targetYaw);
+        let normalizedTargetPitch = normalizeAngle(targetPitch);
+
+        // Проверяем разницу углов yaw и pitch
+        let yawDifference = Math.abs(normalizedTargetYaw - normalizedCurrentYaw);
+        let pitchDifference = Math.abs(normalizedTargetPitch - normalizedCurrentPitch);
+
+        // Учитываем возможность перехода через 0 градусов для yaw
+        if (yawDifference > 180) {
+            yawDifference = 360 - yawDifference;
+        }
+
+        // Учитываем возможность перехода через 0 градусов для pitch
+        if (pitchDifference > 180) {
+            pitchDifference = 360 - pitchDifference;
+        }
+
+        // Проверка, попадает ли игрок в диапазон углов +/- 180 градусов по yaw и +/- 90 по pitch
+        if (yawDifference <= 110 && pitchDifference <= 110) {
+        hm = true;
+        } else {
+        hm = false;
+        }
+    }
+}
+
+let h = false;
+let timr = 0;
+let isPrintingg = false;
+let log = false;
+   let iop = 0;
+
+function onLevelTick() {
+if (module.isActive()) {
+
+let t = LocalPlayer.getPointedPlayer();
+
+if (t == lastAttackedPlayer) {
+timer++;
+if (timer > 250) {
+timer = 0;
+h = true;
+Level.displayClientMessage("§l§cAim Detection");
+LocalPlayer.setRot(15, 15);
+}
+} else {
+h = false;
+}
+
+    let vx = LocalPlayer.getVelocityX();
+    let vy = LocalPlayer.getVelocityY();
+    let vz = LocalPlayer.getVelocityZ();
+    let speed = Math.sqrt(vx * vx + vy * vy + vz * vz);
+    
+    if (speed > 0.52 && LocalPlayer.isOnGround()) {
+    timr++
+    if (timr > 2) {
+    if (LocalPlayer.isMoveButtonPressed(MoveButton.FORWARD) || 
+            LocalPlayer.isMoveButtonPressed(MoveButton.BACK) || 
+            LocalPlayer.isMoveButtonPressed(MoveButton.LEFT) || 
+            LocalPlayer.isMoveButtonPressed(MoveButton.LEFT_TOP) || 
+            LocalPlayer.isMoveButtonPressed(MoveButton.RIGHT) || 
+            LocalPlayer.isMoveButtonPressed(MoveButton.RIGHT_TOP)) {
+            timr = 0;
+            LocalPlayer.setVelocityY(-10);
+            
+            LocalPlayer.setVelocityX(0);
+            Level.displayClientMessage("Speed Flag" + speed);
+            
+            LocalPlayer.setVelocityZ(0);
+            LocalPlayer.setStatusFlag(16, true);
+            }
+       }
+   } else {
+   LocalPlayer.setStatusFlag(16, false);
+   }
+   if (!LocalPlayer.isOnGround()) {
+   iop++
+   if (iop > 100) {
+       if (LocalPlayer.isMoveButtonPressed(MoveButton.FORWARD) || 
+            LocalPlayer.isMoveButtonPressed(MoveButton.BACK) || 
+            LocalPlayer.isMoveButtonPressed(MoveButton.LEFT) || 
+            LocalPlayer.isMoveButtonPressed(MoveButton.LEFT_TOP) || 
+            LocalPlayer.isMoveButtonPressed(MoveButton.RIGHT) || 
+            LocalPlayer.isMoveButtonPressed(MoveButton.RIGHT_TOP)) {
+   LocalPlayer.setVelocityY(-4);
+   Level.displayClientMessage("Glide Flag");
+   iop = 98;
+   }
+   }
+   } else {
+   iop = 0;
+   }
+}
+}
+
+let ti = 0;
+let vne = false;
+
+function onAttack(player) {
+    if (module.isActive()) {
+    isPlayerInView(player);
+        if (player !== lastAttackedPlayer) {
+            lastAttackedPlayer = player;
+            invisibleHits = 0;  // Сбросить счетчик, если атакован новый игрок
+        }
+
+        if (hm) {
+        tiu = false;
+        vne = false;
+            // Игрок в зоне видимости, сбрасываем счетчик
+            invisibleHits = 0;
+        } else {
+            // Игрок вне зоны видимости
+            invisibleHits++;
+            Level.displayClientMessage("§l§eИгрок вне видимости! " + invisibleHits);
+            tiu = true
+            if (tiu) {
+            if (ti > 20) {
+            ti = 0
+            vne = true;
+            }
+            }
+        }
+    }
+}
+
+let tim = 0;
+let isPrinting = false;
+
+function onSendPacket(name, address) {
+    if (name == PacketType.INTERACT_PACKET && (Memory.getInt(address, 12) & 0xff) == 2) { 
+        let target = Memory.getInt(address, 12+4)
+
+if (vne) {
+preventDefault();
+}
+
+        if (h) {
+        isPrinting = true;
+tim++;
+if (tim > 40 && isPrinting) {
+tim = 0;
+Level.displayClientMessage("§l§cAim Detection");
+        const duration = 3000; // 3 секунды
+        const endTime = Date.now() + duration;
+
+        function printHi() {
+            if (Date.now() < endTime) {
+             preventDefault()
+                // Рекурсивный вызов для следующей печати
+                printHi();
+            } else {
+                isPrinting = false; // Завершили печать
+            }
+        }
+    }
+  }
+}
+}
+
+function onScriptEnabled() {
+    ModuleManager.addModule(module);
+}
+
+function onScriptDisabled() {
+    ModuleManager.removeModule(module);
+}

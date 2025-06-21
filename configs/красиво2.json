@@ -1,0 +1,2776 @@
+{
+    "modules": [
+        {
+            "name": "aimbot",
+            "active": false,
+            "bind": {
+                "active": false,
+                "position": {
+                    "x": 0,
+                    "y": 0
+                }
+            },
+            "settings": [
+                {
+                    "type": "slider",
+                    "name": "smoothness",
+                    "value": 0.25
+                },
+                {
+                    "type": "slider",
+                    "name": "distance",
+                    "value": 5
+                },
+                {
+                    "type": "state",
+                    "name": "check for angle",
+                    "value": false
+                },
+                {
+                    "type": "slider",
+                    "name": "angle (horizontal)",
+                    "value": 180
+                },
+                {
+                    "type": "slider",
+                    "name": "angle (vertical)",
+                    "value": 90
+                }
+            ]
+        },
+        {
+            "name": "antibot",
+            "active": true,
+            "bind": {
+                "active": false,
+                "position": {
+                    "x": 0,
+                    "y": 0
+                }
+            },
+            "settings": [
+                {
+                    "type": "state",
+                    "name": "invisible check",
+                    "value": true
+                },
+                {
+                    "type": "state",
+                    "name": "hitbox check",
+                    "value": true
+                },
+                {
+                    "type": "state",
+                    "name": "name tag check",
+                    "value": true
+                },
+                {
+                    "type": "state",
+                    "name": "teleport check",
+                    "value": true
+                },
+                {
+                    "type": "slider",
+                    "name": "radius",
+                    "value": 15
+                },
+                {
+                    "type": "state",
+                    "name": "other check",
+                    "value": true
+                },
+                {
+                    "type": "state",
+                    "name": "extra check",
+                    "value": true
+                }
+            ]
+        },
+        {
+            "name": "antiknockback",
+            "active": false,
+            "bind": {
+                "active": false,
+                "position": {
+                    "x": 0,
+                    "y": 0
+                }
+            },
+            "settings": [
+                {
+                    "type": "slider",
+                    "name": "horizontal",
+                    "value": 0.5
+                },
+                {
+                    "type": "slider",
+                    "name": "vertical",
+                    "value": 0.5
+                }
+            ]
+        },
+        {
+            "name": "autogapple",
+            "active": false,
+            "bind": {
+                "active": false,
+                "position": {
+                    "x": 0,
+                    "y": 0
+                }
+            },
+            "settings": [
+                {
+                    "type": "state",
+                    "name": "auto swap",
+                    "value": true
+                },
+                {
+                    "type": "slider",
+                    "name": "swap delay",
+                    "value": 5
+                },
+                {
+                    "type": "slider",
+                    "name": "health needed",
+                    "value": 10
+                }
+            ]
+        },
+        {
+            "name": "hitaim",
+            "active": false,
+            "bind": {
+                "active": false,
+                "position": {
+                    "x": 0,
+                    "y": 0
+                }
+            }
+        },
+        {
+            "name": "hitboxes",
+            "active": false,
+            "bind": {
+                "active": false,
+                "position": {
+                    "x": 0,
+                    "y": 0
+                }
+            },
+            "settings": [
+                {
+                    "type": "mode",
+                    "name": "mode",
+                    "value": "All"
+                },
+                {
+                    "type": "slider",
+                    "name": "distance",
+                    "value": 10
+                },
+                {
+                    "type": "slider",
+                    "name": "horizontal",
+                    "value": 10
+                },
+                {
+                    "type": "slider",
+                    "name": "vertical",
+                    "value": 10
+                },
+                {
+                    "type": "state",
+                    "name": "change shadows",
+                    "value": false
+                },
+                {
+                    "type": "slider",
+                    "name": "shadow radius",
+                    "value": 0.6
+                }
+            ]
+        },
+        {
+            "name": "infiniteaura",
+            "active": false,
+            "bind": {
+                "active": false,
+                "position": {
+                    "x": 0,
+                    "y": 0
+                }
+            },
+            "settings": [
+                {
+                    "type": "mode",
+                    "name": "mode",
+                    "value": "Multi"
+                },
+                {
+                    "type": "slider",
+                    "name": "cps",
+                    "value": 5
+                },
+                {
+                    "type": "slider",
+                    "name": "distance",
+                    "value": 10
+                }
+            ]
+        },
+        {
+            "name": "killaura",
+            "active": false,
+            "bind": {
+                "active": false,
+                "position": {
+                    "x": 0,
+                    "y": 0
+                }
+            },
+            "settings": [
+                {
+                    "type": "mode",
+                    "name": "mode",
+                    "value": "Multi"
+                },
+                {
+                    "type": "slider",
+                    "name": "cps",
+                    "value": 5
+                },
+                {
+                    "type": "slider",
+                    "name": "distance",
+                    "value": 10
+                },
+                {
+                    "type": "state",
+                    "name": "check for angle",
+                    "value": false
+                },
+                {
+                    "type": "slider",
+                    "name": "angle (horizontal)",
+                    "value": 180
+                },
+                {
+                    "type": "slider",
+                    "name": "angle (vertical)",
+                    "value": 90
+                }
+            ]
+        },
+        {
+            "name": "nohurtcam",
+            "active": false
+        },
+        {
+            "name": "reach",
+            "active": false,
+            "bind": {
+                "active": false,
+                "position": {
+                    "x": 0,
+                    "y": 0
+                }
+            }
+        },
+        {
+            "name": "targetspin",
+            "active": false,
+            "bind": {
+                "active": false,
+                "position": {
+                    "x": 0,
+                    "y": 0
+                }
+            },
+            "settings": [
+                {
+                    "type": "mode",
+                    "name": "mode",
+                    "value": "Auto"
+                },
+                {
+                    "type": "slider",
+                    "name": "distance",
+                    "value": 5
+                },
+                {
+                    "type": "slider",
+                    "name": "speed",
+                    "value": 0.2
+                },
+                {
+                    "type": "slider",
+                    "name": "height",
+                    "value": 2
+                },
+                {
+                    "type": "state",
+                    "name": "right",
+                    "value": true
+                }
+            ]
+        },
+        {
+            "name": "triggerbot",
+            "active": false,
+            "bind": {
+                "active": false,
+                "position": {
+                    "x": 0,
+                    "y": 0
+                }
+            },
+            "settings": [
+                {
+                    "type": "slider",
+                    "name": "cps",
+                    "value": 6
+                },
+                {
+                    "type": "state",
+                    "name": "random",
+                    "value": false
+                },
+                {
+                    "type": "slider",
+                    "name": "minimal cps",
+                    "value": 6
+                },
+                {
+                    "type": "slider",
+                    "name": "maximal cps",
+                    "value": 12
+                }
+            ]
+        },
+        {
+            "name": "airjump",
+            "active": false,
+            "bind": {
+                "active": false,
+                "position": {
+                    "x": 0,
+                    "y": 0
+                }
+            }
+        },
+        {
+            "name": "elevator",
+            "active": true,
+            "settings": [
+                {
+                    "type": "slider",
+                    "name": "distance",
+                    "value": 2.5
+                }
+            ],
+            "position": {
+                "x": 116,
+                "y": -286
+            }
+        },
+        {
+            "name": "fastladder",
+            "active": false,
+            "bind": {
+                "active": false,
+                "position": {
+                    "x": 0,
+                    "y": 0
+                }
+            },
+            "settings": [
+                {
+                    "type": "slider",
+                    "name": "velocity",
+                    "value": 0.4
+                },
+                {
+                    "type": "slider",
+                    "name": "activation angle",
+                    "value": 30
+                }
+            ]
+        },
+        {
+            "name": "flight",
+            "active": false,
+            "bind": {
+                "active": false,
+                "position": {
+                    "x": 0,
+                    "y": 0
+                }
+            },
+            "settings": [
+                {
+                    "type": "mode",
+                    "name": "mode",
+                    "value": "Velocity"
+                },
+                {
+                    "type": "state",
+                    "name": "no packets",
+                    "value": false
+                },
+                {
+                    "type": "slider",
+                    "name": "speed",
+                    "value": 0.5
+                },
+                {
+                    "type": "state",
+                    "name": "disable when flag",
+                    "value": false
+                }
+            ]
+        },
+        {
+            "name": "glide",
+            "active": false,
+            "bind": {
+                "active": false,
+                "position": {
+                    "x": 0,
+                    "y": 0
+                }
+            },
+            "settings": [
+                {
+                    "type": "mode",
+                    "name": "mode",
+                    "value": "Horizontal"
+                },
+                {
+                    "type": "slider",
+                    "name": "velocity",
+                    "value": 0
+                }
+            ]
+        },
+        {
+            "name": "jetpack",
+            "active": false,
+            "bind": {
+                "active": false,
+                "position": {
+                    "x": 0,
+                    "y": 0
+                }
+            },
+            "settings": [
+                {
+                    "type": "state",
+                    "name": "inertia",
+                    "value": true
+                },
+                {
+                    "type": "mode",
+                    "name": "mode",
+                    "value": "Velocity"
+                },
+                {
+                    "type": "slider",
+                    "name": "speed",
+                    "value": 1
+                }
+            ]
+        },
+        {
+            "name": "move",
+            "active": false,
+            "settings": [
+                {
+                    "type": "slider",
+                    "name": "distance",
+                    "value": 5
+                }
+            ],
+            "position": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        {
+            "name": "novoid",
+            "active": false,
+            "bind": {
+                "active": false,
+                "position": {
+                    "x": 0,
+                    "y": 0
+                }
+            },
+            "settings": [
+                {
+                    "type": "slider",
+                    "name": "distance",
+                    "value": 5
+                }
+            ]
+        },
+        {
+            "name": "safewalk",
+            "active": false,
+            "bind": {
+                "active": false,
+                "position": {
+                    "x": 0,
+                    "y": 0
+                }
+            }
+        },
+        {
+            "name": "scaffold",
+            "active": false,
+            "bind": {
+                "active": false,
+                "position": {
+                    "x": 0,
+                    "y": 0
+                }
+            },
+            "settings": [
+                {
+                    "type": "state",
+                    "name": "auto swap",
+                    "value": true
+                },
+                {
+                    "type": "slider",
+                    "name": "swap delay",
+                    "value": 5
+                },
+                {
+                    "type": "state",
+                    "name": "auto select",
+                    "value": true
+                }
+            ]
+        },
+        {
+            "name": "speedhack",
+            "active": false,
+            "bind": {
+                "active": false,
+                "position": {
+                    "x": 0,
+                    "y": 0
+                }
+            },
+            "settings": [
+                {
+                    "type": "slider",
+                    "name": "velocity",
+                    "value": 0.6
+                },
+                {
+                    "type": "slider",
+                    "name": "velocity y",
+                    "value": 0.4
+                }
+            ]
+        },
+        {
+            "name": "step",
+            "active": false,
+            "settings": [
+                {
+                    "type": "slider",
+                    "name": "max height",
+                    "value": 1
+                }
+            ]
+        },
+        {
+            "name": "taptp",
+            "active": false,
+            "bind": {
+                "active": false,
+                "position": {
+                    "x": 0,
+                    "y": 0
+                }
+            },
+            "settings": [
+                {
+                    "type": "state",
+                    "name": "no packets",
+                    "value": false
+                }
+            ]
+        },
+        {
+            "name": "antiafk",
+            "active": false,
+            "settings": [
+                {
+                    "type": "mode",
+                    "name": "mode",
+                    "value": "Rotation"
+                }
+            ]
+        },
+        {
+            "name": "autoarmor",
+            "active": false,
+            "bind": {
+                "active": false,
+                "position": {
+                    "x": 0,
+                    "y": 0
+                }
+            },
+            "settings": [
+                {
+                    "type": "state",
+                    "name": "inventory only",
+                    "value": false
+                },
+                {
+                    "type": "slider",
+                    "name": "delay",
+                    "value": 5
+                }
+            ]
+        },
+        {
+            "name": "autoclicker",
+            "active": false,
+            "bind": {
+                "active": false,
+                "position": {
+                    "x": 0,
+                    "y": 0
+                }
+            },
+            "settings": [
+                {
+                    "type": "slider",
+                    "name": "cps",
+                    "value": 20
+                },
+                {
+                    "type": "state",
+                    "name": "right click",
+                    "value": false
+                }
+            ]
+        },
+        {
+            "name": "autosprint",
+            "active": true,
+            "bind": {
+                "active": false,
+                "position": {
+                    "x": 0,
+                    "y": 0
+                }
+            },
+            "settings": [
+                {
+                    "type": "mode",
+                    "name": "mode",
+                    "value": "Forward"
+                }
+            ]
+        },
+        {
+            "name": "autosword",
+            "active": false,
+            "bind": {
+                "active": false,
+                "position": {
+                    "x": 0,
+                    "y": 0
+                }
+            },
+            "settings": [
+                {
+                    "type": "state",
+                    "name": "auto swap",
+                    "value": true
+                },
+                {
+                    "type": "slider",
+                    "name": "swap delay",
+                    "value": 5
+                },
+                {
+                    "type": "state",
+                    "name": "auto select",
+                    "value": true
+                },
+                {
+                    "type": "mode",
+                    "name": "selection mode",
+                    "value": "Hit"
+                },
+                {
+                    "type": "slider",
+                    "name": "distance",
+                    "value": 5
+                }
+            ]
+        },
+        {
+            "name": "autototem",
+            "active": false,
+            "bind": {
+                "active": false,
+                "position": {
+                    "x": 0,
+                    "y": 0
+                }
+            }
+        },
+        {
+            "name": "bedfucker",
+            "active": false,
+            "bind": {
+                "active": false,
+                "position": {
+                    "x": 0,
+                    "y": 0
+                }
+            },
+            "settings": [
+                {
+                    "type": "slider",
+                    "name": "delay",
+                    "value": 10
+                },
+                {
+                    "type": "slider",
+                    "name": "range",
+                    "value": 5
+                }
+            ]
+        },
+        {
+            "name": "cheststealer",
+            "active": false,
+            "bind": {
+                "active": false,
+                "position": {
+                    "x": 0,
+                    "y": 0
+                }
+            },
+            "settings": [
+                {
+                    "type": "slider",
+                    "name": "loot delay",
+                    "value": 1
+                },
+                {
+                    "type": "state",
+                    "name": "auto close",
+                    "value": true
+                },
+                {
+                    "type": "slider",
+                    "name": "close delay",
+                    "value": 10
+                }
+            ]
+        },
+        {
+            "name": "coordinates",
+            "active": false,
+            "position": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        {
+            "name": "fastbreak",
+            "active": false,
+            "bind": {
+                "active": false,
+                "position": {
+                    "x": 0,
+                    "y": 0
+                }
+            },
+            "settings": [
+                {
+                    "type": "state",
+                    "name": "tap destroy",
+                    "value": false
+                },
+                {
+                    "type": "slider",
+                    "name": "amplifier",
+                    "value": 255
+                }
+            ]
+        },
+        {
+            "name": "fasteat",
+            "active": false,
+            "bind": {
+                "active": false,
+                "position": {
+                    "x": 0,
+                    "y": 0
+                }
+            },
+            "settings": [
+                {
+                    "type": "slider",
+                    "name": "duration",
+                    "value": 1
+                }
+            ]
+        },
+        {
+            "name": "fastpearl",
+            "active": false,
+            "position": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        {
+            "name": "fastpotion",
+            "active": false,
+            "position": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        {
+            "name": "fullbright",
+            "active": false
+        },
+        {
+            "name": "inventorycleaner",
+            "active": false,
+            "bind": {
+                "active": false,
+                "position": {
+                    "x": 0,
+                    "y": 0
+                }
+            },
+            "settings": [
+                {
+                    "type": "state",
+                    "name": "drop",
+                    "value": true
+                },
+                {
+                    "type": "state",
+                    "name": "clean hotbar",
+                    "value": true
+                },
+                {
+                    "type": "state",
+                    "name": "drop useless items",
+                    "value": true
+                },
+                {
+                    "type": "state",
+                    "name": "drop duplicated items",
+                    "value": false
+                }
+            ]
+        },
+        {
+            "name": "jesus",
+            "active": false,
+            "bind": {
+                "active": false,
+                "position": {
+                    "x": 0,
+                    "y": 0
+                }
+            }
+        },
+        {
+            "name": "nuker",
+            "active": false,
+            "bind": {
+                "active": false,
+                "position": {
+                    "x": 0,
+                    "y": 0
+                }
+            },
+            "settings": [
+                {
+                    "type": "slider",
+                    "name": "radius",
+                    "value": 2
+                }
+            ]
+        },
+        {
+            "name": "ambience",
+            "active": true,
+            "bind": {
+                "active": false,
+                "position": {
+                    "x": 0,
+                    "y": 0
+                }
+            },
+            "settings": [
+                {
+                    "type": "slider",
+                    "name": "time",
+                    "value": 15700
+                },
+                {
+                    "type": "state",
+                    "name": "day cycle",
+                    "value": false
+                },
+                {
+                    "type": "slider",
+                    "name": "cycle speed",
+                    "value": 20
+                },
+                {
+                    "type": "state",
+                    "name": "recolor sky",
+                    "value": true
+                },
+                {
+                    "type": "slider",
+                    "name": "red (sky)",
+                    "value": 1
+                },
+                {
+                    "type": "slider",
+                    "name": "green (sky)",
+                    "value": 0.6
+                },
+                {
+                    "type": "slider",
+                    "name": "blue (sky)",
+                    "value": 0
+                },
+                {
+                    "type": "state",
+                    "name": "rainbow (sky)",
+                    "value": false
+                },
+                {
+                    "type": "state",
+                    "name": "recolor fog",
+                    "value": true
+                },
+                {
+                    "type": "slider",
+                    "name": "red (fog)",
+                    "value": 0.93
+                },
+                {
+                    "type": "slider",
+                    "name": "green (fog)",
+                    "value": 0.24
+                },
+                {
+                    "type": "slider",
+                    "name": "blue (fog)",
+                    "value": 0.08
+                },
+                {
+                    "type": "state",
+                    "name": "rainbow (fog)",
+                    "value": false
+                },
+                {
+                    "type": "state",
+                    "name": "recolor clouds",
+                    "value": true
+                },
+                {
+                    "type": "slider",
+                    "name": "red (clouds)",
+                    "value": 0.88
+                },
+                {
+                    "type": "slider",
+                    "name": "green (clouds)",
+                    "value": 0.35
+                },
+                {
+                    "type": "slider",
+                    "name": "blue (clouds)",
+                    "value": 1
+                },
+                {
+                    "type": "state",
+                    "name": "rainbow (clouds)",
+                    "value": false
+                },
+                {
+                    "type": "slider",
+                    "name": "rainbow speed",
+                    "value": 0.1
+                }
+            ]
+        },
+        {
+            "name": "antiimmobile",
+            "active": false,
+            "bind": {
+                "active": false,
+                "position": {
+                    "x": 0,
+                    "y": 0
+                }
+            }
+        },
+        {
+            "name": "armorhud",
+            "active": false,
+            "bind": {
+                "active": false,
+                "position": {
+                    "x": 0,
+                    "y": 0
+                }
+            },
+            "settings": [
+                {
+                    "type": "mode",
+                    "name": "mode",
+                    "value": "Vertical"
+                },
+                {
+                    "type": "slider",
+                    "name": "size",
+                    "value": 1
+                },
+                {
+                    "type": "slider",
+                    "name": "position x",
+                    "value": 0
+                },
+                {
+                    "type": "slider",
+                    "name": "position y",
+                    "value": 0
+                }
+            ]
+        },
+        {
+            "name": "aspectratio",
+            "active": false,
+            "bind": {
+                "active": false,
+                "position": {
+                    "x": 0,
+                    "y": 0
+                }
+            },
+            "settings": [
+                {
+                    "type": "slider",
+                    "name": "horizontal",
+                    "value": 1.2
+                },
+                {
+                    "type": "slider",
+                    "name": "vertical",
+                    "value": 1
+                }
+            ]
+        },
+        {
+            "name": "attackparticles",
+            "active": false,
+            "bind": {
+                "active": false,
+                "position": {
+                    "x": 0,
+                    "y": 0
+                }
+            },
+            "settings": [
+                {
+                    "type": "mode",
+                    "name": "particle",
+                    "value": "Bubble"
+                },
+                {
+                    "type": "slider",
+                    "name": "radius",
+                    "value": 1
+                },
+                {
+                    "type": "slider",
+                    "name": "delta",
+                    "value": 0.2
+                },
+                {
+                    "type": "slider",
+                    "name": "size",
+                    "value": 1
+                }
+            ]
+        },
+        {
+            "name": "blockselection",
+            "active": false,
+            "settings": [
+                {
+                    "type": "slider",
+                    "name": "red",
+                    "value": 1
+                },
+                {
+                    "type": "slider",
+                    "name": "green",
+                    "value": 0.6
+                },
+                {
+                    "type": "slider",
+                    "name": "blue",
+                    "value": 0
+                },
+                {
+                    "type": "state",
+                    "name": "rainbow",
+                    "value": false
+                },
+                {
+                    "type": "slider",
+                    "name": "rainbow speed",
+                    "value": 0.1
+                }
+            ]
+        },
+        {
+            "name": "chams",
+            "active": false,
+            "bind": {
+                "active": false,
+                "position": {
+                    "x": 0,
+                    "y": 0
+                }
+            },
+            "settings": [
+                {
+                    "type": "slider",
+                    "name": "red",
+                    "value": 1
+                },
+                {
+                    "type": "slider",
+                    "name": "green",
+                    "value": 0.6
+                },
+                {
+                    "type": "slider",
+                    "name": "blue",
+                    "value": 0
+                },
+                {
+                    "type": "slider",
+                    "name": "alpha",
+                    "value": 1
+                },
+                {
+                    "type": "slider",
+                    "name": "brightness",
+                    "value": 1
+                },
+                {
+                    "type": "state",
+                    "name": "rainbow",
+                    "value": false
+                },
+                {
+                    "type": "slider",
+                    "name": "rainbow speed",
+                    "value": 0.1
+                },
+                {
+                    "type": "state",
+                    "name": "render through walls",
+                    "value": false
+                },
+                {
+                    "type": "mode",
+                    "name": "mode",
+                    "value": "Overdraw"
+                }
+            ]
+        },
+        {
+            "name": "chatmacros",
+            "active": false,
+            "settings": [
+                {
+                    "type": "text-field",
+                    "name": "macros",
+                    "value": "\/spawn;\/warp pvp"
+                }
+            ],
+            "position": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        {
+            "name": "chestesp",
+            "active": false
+        },
+        {
+            "name": "editionfaker",
+            "active": false,
+            "settings": [
+                {
+                    "type": "mode",
+                    "name": "edition",
+                    "value": "Windows 10"
+                }
+            ]
+        },
+        {
+            "name": "f5",
+            "bind": {
+                "active": false,
+                "position": {
+                    "x": 0,
+                    "y": 0
+                }
+            },
+            "settings": [
+                {
+                    "type": "state",
+                    "name": "skip third person view",
+                    "value": false
+                },
+                {
+                    "type": "mode",
+                    "name": "view from",
+                    "value": "Front"
+                }
+            ]
+        },
+        {
+            "name": "fastregister",
+            "settings": [
+                {
+                    "type": "text-field",
+                    "name": "password",
+                    "value": "qwertyuiop123456789"
+                }
+            ]
+        },
+        {
+            "name": "freecam",
+            "active": false,
+            "bind": {
+                "active": false,
+                "position": {
+                    "x": 0,
+                    "y": 0
+                }
+            },
+            "settings": [
+                {
+                    "type": "slider",
+                    "name": "speed",
+                    "value": 0.05
+                }
+            ]
+        },
+        {
+            "name": "friendlist",
+            "friends": []
+        },
+        {
+            "name": "handview",
+            "active": false,
+            "bind": {
+                "active": false,
+                "position": {
+                    "x": 0,
+                    "y": 0
+                }
+            },
+            "settings": [
+                {
+                    "type": "state",
+                    "name": "flux swing",
+                    "value": false
+                },
+                {
+                    "type": "slider",
+                    "name": "pos x",
+                    "value": 1
+                },
+                {
+                    "type": "slider",
+                    "name": "pos y",
+                    "value": 1
+                },
+                {
+                    "type": "slider",
+                    "name": "pos z",
+                    "value": 1
+                },
+                {
+                    "type": "slider",
+                    "name": "rot x",
+                    "value": 1
+                },
+                {
+                    "type": "slider",
+                    "name": "rot y",
+                    "value": 1
+                },
+                {
+                    "type": "slider",
+                    "name": "rot z",
+                    "value": 1
+                },
+                {
+                    "type": "slider",
+                    "name": "rot x 2",
+                    "value": 1
+                },
+                {
+                    "type": "slider",
+                    "name": "rot y 2",
+                    "value": 1
+                },
+                {
+                    "type": "slider",
+                    "name": "rot z 2",
+                    "value": 1
+                }
+            ]
+        },
+        {
+            "name": "nameprotect",
+            "active": false,
+            "bind": {
+                "active": false,
+                "position": {
+                    "x": 0,
+                    "y": 0
+                }
+            },
+            "settings": [
+                {
+                    "type": "text-field",
+                    "name": "fake name",
+                    "value": "ponos"
+                }
+            ]
+        },
+        {
+            "name": "nametags",
+            "active": false,
+            "bind": {
+                "active": false,
+                "position": {
+                    "x": 0,
+                    "y": 0
+                }
+            },
+            "settings": [
+                {
+                    "type": "state",
+                    "name": "display distance",
+                    "value": false
+                },
+                {
+                    "type": "slider",
+                    "name": "name tag size",
+                    "value": 0.6
+                },
+                {
+                    "type": "state",
+                    "name": "render items",
+                    "value": false
+                },
+                {
+                    "type": "slider",
+                    "name": "item size",
+                    "value": 0.75
+                },
+                {
+                    "type": "slider",
+                    "name": "items gap",
+                    "value": 12.5
+                }
+            ]
+        },
+        {
+            "name": "noclip",
+            "active": false,
+            "bind": {
+                "active": false,
+                "position": {
+                    "x": 0,
+                    "y": 0
+                }
+            },
+            "settings": [
+                {
+                    "type": "slider",
+                    "name": "speed",
+                    "value": 0.05
+                }
+            ]
+        },
+        {
+            "name": "nodynamicfov",
+            "active": false,
+            "bind": {
+                "active": false,
+                "position": {
+                    "x": 0,
+                    "y": 0
+                }
+            }
+        },
+        {
+            "name": "nofriends",
+            "active": false,
+            "bind": {
+                "active": false,
+                "position": {
+                    "x": 0,
+                    "y": 0
+                }
+            }
+        },
+        {
+            "name": "nopackets",
+            "active": false,
+            "bind": {
+                "active": true,
+                "position": {
+                    "x": 375,
+                    "y": -359
+                }
+            }
+        },
+        {
+            "name": "norender",
+            "active": false,
+            "bind": {
+                "active": false,
+                "position": {
+                    "x": 0,
+                    "y": 0
+                }
+            },
+            "settings": [
+                {
+                    "type": "state",
+                    "name": "name tags",
+                    "value": false
+                },
+                {
+                    "type": "state",
+                    "name": "flame",
+                    "value": false
+                },
+                {
+                    "type": "state",
+                    "name": "particles",
+                    "value": false
+                },
+                {
+                    "type": "state",
+                    "name": "screen texts",
+                    "value": false
+                },
+                {
+                    "type": "state",
+                    "name": "boss bar",
+                    "value": false
+                },
+                {
+                    "type": "state",
+                    "name": "control buttons",
+                    "value": false
+                },
+                {
+                    "type": "state",
+                    "name": "left hand",
+                    "value": false
+                }
+            ]
+        },
+        {
+            "name": "pingmeter",
+            "active": false,
+            "position": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        {
+            "name": "playeresp",
+            "active": false,
+            "settings": [
+                {
+                    "type": "state",
+                    "name": "fill",
+                    "value": false
+                },
+                {
+                    "type": "slider",
+                    "name": "thickness",
+                    "value": 0.5
+                },
+                {
+                    "type": "slider",
+                    "name": "red",
+                    "value": 1
+                },
+                {
+                    "type": "slider",
+                    "name": "green",
+                    "value": 0.6
+                },
+                {
+                    "type": "slider",
+                    "name": "blue",
+                    "value": 0
+                },
+                {
+                    "type": "state",
+                    "name": "rainbow",
+                    "value": false
+                },
+                {
+                    "type": "slider",
+                    "name": "rainbow speed",
+                    "value": 0.1
+                }
+            ]
+        },
+        {
+            "name": "spammer",
+            "active": false,
+            "settings": [
+                {
+                    "type": "slider",
+                    "name": "messages per second",
+                    "value": 20
+                },
+                {
+                    "type": "state",
+                    "name": "random string at the end",
+                    "value": false
+                },
+                {
+                    "type": "slider",
+                    "name": "count of random symbols",
+                    "value": 4
+                },
+                {
+                    "type": "text-field",
+                    "name": "text",
+                    "value": "Variable - the best mcpe hacked client!"
+                }
+            ]
+        },
+        {
+            "name": "customdpi",
+            "settings": [
+                {
+                    "type": "slider",
+                    "name": "dpi",
+                    "value": 300
+                }
+            ]
+        },
+        {
+            "name": "fastunban",
+            "settings": [
+                {
+                    "type": "state",
+                    "name": "change username",
+                    "value": true
+                },
+                {
+                    "type": "state",
+                    "name": "change clientid",
+                    "value": true
+                },
+                {
+                    "type": "state",
+                    "name": "change device",
+                    "value": false
+                },
+                {
+                    "type": "state",
+                    "name": "random",
+                    "value": true
+                },
+                {
+                    "type": "state",
+                    "name": "change manufacturer",
+                    "value": false
+                },
+                {
+                    "type": "text-field",
+                    "name": "manufacturer",
+                    "value": "Xiaomi"
+                },
+                {
+                    "type": "state",
+                    "name": "change model",
+                    "value": false
+                },
+                {
+                    "type": "text-field",
+                    "name": "model",
+                    "value": "M2006C3LG"
+                }
+            ]
+        },
+        {
+            "name": "ghostmode",
+            "active": false,
+            "bind": {
+                "active": false,
+                "position": {
+                    "x": 0,
+                    "y": 0
+                }
+            },
+            "settings": [
+                {
+                    "type": "state",
+                    "name": "hide binds",
+                    "value": false
+                }
+            ]
+        },
+        {
+            "name": "notifications",
+            "active": true,
+            "settings": [
+                {
+                    "type": "slider",
+                    "name": "delay",
+                    "value": 2.5
+                }
+            ]
+        },
+        {
+            "name": "panic",
+            "bind": {
+                "active": false,
+                "position": {
+                    "x": 0,
+                    "y": 0
+                }
+            }
+        },
+        {
+            "name": "packetlog",
+            "active": false,
+            "bind": {
+                "active": false,
+                "position": {
+                    "x": 0,
+                    "y": 0
+                }
+            }
+        },
+        {
+            "name": "aimpacket",
+            "active": false,
+            "bind": {
+                "active": false,
+                "position": {
+                    "x": 0,
+                    "y": 0
+                }
+            }
+        },
+        {
+            "name": "mama killaura",
+            "active": false,
+            "bind": {
+                "active": false,
+                "position": {
+                    "x": 0,
+                    "y": 0
+                }
+            },
+            "settings": [
+                {
+                    "type": "state",
+                    "name": "random",
+                    "value": false
+                },
+                {
+                    "type": "slider",
+                    "name": "cps",
+                    "value": 5
+                },
+                {
+                    "type": "slider",
+                    "name": "minimal cps",
+                    "value": 4
+                },
+                {
+                    "type": "slider",
+                    "name": "maximal cps",
+                    "value": 5
+                },
+                {
+                    "type": "slider",
+                    "name": "radius",
+                    "value": 4
+                }
+            ]
+        },
+        {
+            "name": "amm",
+            "active": false,
+            "bind": {
+                "active": false,
+                "position": {
+                    "x": 0,
+                    "y": 0
+                }
+            }
+        },
+        {
+            "name": "pass",
+            "active": false,
+            "bind": {
+                "active": false,
+                "position": {
+                    "x": 0,
+                    "y": 0
+                }
+            },
+            "settings": [
+                {
+                    "type": "text-field",
+                    "name": "pass",
+                    "value": ""
+                }
+            ]
+        },
+        {
+            "name": "cps",
+            "active": false,
+            "bind": {
+                "active": false,
+                "position": {
+                    "x": 0,
+                    "y": 0
+                }
+            }
+        },
+        {
+            "name": "fakelag",
+            "active": false,
+            "bind": {
+                "active": false,
+                "position": {
+                    "x": 0,
+                    "y": 0
+                }
+            },
+            "settings": [
+                {
+                    "type": "slider",
+                    "name": "speed",
+                    "value": 0.1
+                },
+                {
+                    "type": "slider",
+                    "name": "speedofwalk",
+                    "value": 0.05
+                },
+                {
+                    "type": "slider",
+                    "name": "time",
+                    "value": 10
+                },
+                {
+                    "type": "mode",
+                    "name": "mode",
+                    "value": "Prov"
+                },
+                {
+                    "type": "state",
+                    "name": "врубать",
+                    "value": true
+                }
+            ]
+        },
+        {
+            "name": "fastshift",
+            "active": false,
+            "bind": {
+                "active": false,
+                "position": {
+                    "x": 0,
+                    "y": 0
+                }
+            }
+        },
+        {
+            "name": "flyyy",
+            "active": false,
+            "bind": {
+                "active": false,
+                "position": {
+                    "x": 0,
+                    "y": 0
+                }
+            },
+            "settings": [
+                {
+                    "type": "mode",
+                    "name": "mode",
+                    "value": "Vanilla"
+                },
+                {
+                    "type": "slider",
+                    "name": "glidedelay",
+                    "value": 2
+                },
+                {
+                    "type": "slider",
+                    "name": "stucktick",
+                    "value": 10
+                },
+                {
+                    "type": "slider",
+                    "name": "stuckdelay",
+                    "value": 20
+                },
+                {
+                    "type": "slider",
+                    "name": "teleporty",
+                    "value": 5
+                },
+                {
+                    "type": "slider",
+                    "name": "teleportdelay",
+                    "value": 10
+                },
+                {
+                    "type": "slider",
+                    "name": "horizontal",
+                    "value": 0.4
+                },
+                {
+                    "type": "slider",
+                    "name": "vertical",
+                    "value": 0.4
+                }
+            ]
+        },
+        {
+            "name": "no rendere+",
+            "active": false,
+            "bind": {
+                "active": false,
+                "position": {
+                    "x": 0,
+                    "y": 0
+                }
+            },
+            "settings": [
+                {
+                    "type": "state",
+                    "name": "name tags",
+                    "value": false
+                }
+            ]
+        },
+        {
+            "name": "aura",
+            "active": false,
+            "bind": {
+                "active": false,
+                "position": {
+                    "x": 0,
+                    "y": 0
+                }
+            },
+            "settings": [
+                {
+                    "type": "slider",
+                    "name": "range",
+                    "value": 4
+                },
+                {
+                    "type": "slider",
+                    "name": "cps",
+                    "value": 10
+                },
+                {
+                    "type": "state",
+                    "name": "aimassist",
+                    "value": true
+                },
+                {
+                    "type": "slider",
+                    "name": "aimspeed",
+                    "value": 0.5
+                }
+            ]
+        },
+        {
+            "name": "bedaim",
+            "active": false,
+            "bind": {
+                "active": false,
+                "position": {
+                    "x": 0,
+                    "y": 0
+                }
+            },
+            "settings": [
+                {
+                    "type": "slider",
+                    "name": "radar",
+                    "value": 1
+                }
+            ]
+        },
+        {
+            "name": "autowalk",
+            "active": false,
+            "bind": {
+                "active": false,
+                "position": {
+                    "x": 0,
+                    "y": 0
+                }
+            }
+        },
+        {
+            "name": "lavaradar",
+            "active": false,
+            "bind": {
+                "active": false,
+                "position": {
+                    "x": 0,
+                    "y": 0
+                }
+            },
+            "settings": [
+                {
+                    "type": "slider",
+                    "name": "radar",
+                    "value": 1
+                }
+            ]
+        },
+        {
+            "name": "blockesp",
+            "active": false,
+            "bind": {
+                "active": false,
+                "position": {
+                    "x": 0,
+                    "y": 0
+                }
+            },
+            "settings": [
+                {
+                    "type": "text-field",
+                    "name": "block ids",
+                    "value": "14,15,16,21,56,73"
+                }
+            ]
+        },
+        {
+            "name": "mg",
+            "active": false,
+            "bind": {
+                "active": false,
+                "position": {
+                    "x": 0,
+                    "y": 0
+                }
+            },
+            "settings": [
+                {
+                    "type": "text-field",
+                    "name": "пиши",
+                    "value": "§l§cАдмин §f§l§eGenius008 §f> §f§l."
+                }
+            ]
+        },
+        {
+            "name": "batterspeed",
+            "active": false,
+            "bind": {
+                "active": false,
+                "position": {
+                    "x": 0,
+                    "y": 0
+                }
+            },
+            "settings": [
+                {
+                    "type": "state",
+                    "name": "strafe",
+                    "value": true
+                },
+                {
+                    "type": "state",
+                    "name": "typefalling",
+                    "value": false
+                },
+                {
+                    "type": "mode",
+                    "name": "mode",
+                    "value": "Mode1 (-0.2)"
+                },
+                {
+                    "type": "slider",
+                    "name": "batterspeed",
+                    "value": 0.3
+                },
+                {
+                    "type": "state",
+                    "name": "withscaffold(test)",
+                    "value": false
+                }
+            ]
+        },
+        {
+            "name": "no render+",
+            "active": false,
+            "bind": {
+                "active": false,
+                "position": {
+                    "x": 0,
+                    "y": 0
+                }
+            },
+            "settings": [
+                {
+                    "type": "state",
+                    "name": "name tags",
+                    "value": false
+                },
+                {
+                    "type": "state",
+                    "name": "flame",
+                    "value": false
+                },
+                {
+                    "type": "state",
+                    "name": "particles",
+                    "value": false
+                },
+                {
+                    "type": "state",
+                    "name": "screen texts",
+                    "value": false
+                },
+                {
+                    "type": "state",
+                    "name": "boss bar",
+                    "value": false
+                },
+                {
+                    "type": "state",
+                    "name": "control buttons",
+                    "value": false
+                },
+                {
+                    "type": "state",
+                    "name": "left hand",
+                    "value": false
+                }
+            ]
+        },
+        {
+            "name": "flyy",
+            "active": false,
+            "bind": {
+                "active": false,
+                "position": {
+                    "x": 0,
+                    "y": 0
+                }
+            },
+            "settings": [
+                {
+                    "type": "slider",
+                    "name": "speed",
+                    "value": 20
+                },
+                {
+                    "type": "state",
+                    "name": "flag detect",
+                    "value": false
+                }
+            ]
+        },
+        {
+            "name": "posos",
+            "active": false,
+            "bind": {
+                "active": false,
+                "position": {
+                    "x": 0,
+                    "y": 0
+                }
+            }
+        },
+        {
+            "name": "logpacket",
+            "active": false,
+            "bind": {
+                "active": false,
+                "position": {
+                    "x": 0,
+                    "y": 0
+                }
+            },
+            "settings": [
+                {
+                    "type": "slider",
+                    "name": "speed",
+                    "value": 1000
+                },
+                {
+                    "type": "mode",
+                    "name": "mode",
+                    "value": "all"
+                }
+            ]
+        },
+        {
+            "name": "pixel",
+            "active": false,
+            "bind": {
+                "active": false,
+                "position": {
+                    "x": 0,
+                    "y": 0
+                }
+            },
+            "settings": [
+                {
+                    "type": "mode",
+                    "name": "mode",
+                    "value": "Rainbow"
+                },
+                {
+                    "type": "slider",
+                    "name": "x",
+                    "value": 50
+                },
+                {
+                    "type": "slider",
+                    "name": "y",
+                    "value": 30
+                },
+                {
+                    "type": "slider",
+                    "name": "time",
+                    "value": 120
+                },
+                {
+                    "type": "slider",
+                    "name": "r",
+                    "value": 22
+                },
+                {
+                    "type": "slider",
+                    "name": "g",
+                    "value": 13
+                },
+                {
+                    "type": "slider",
+                    "name": "b",
+                    "value": 2
+                },
+                {
+                    "type": "slider",
+                    "name": "corner radius",
+                    "value": 5
+                }
+            ]
+        },
+        {
+            "name": "q",
+            "active": false,
+            "bind": {
+                "active": false,
+                "position": {
+                    "x": 0,
+                    "y": 0
+                }
+            },
+            "settings": [
+                {
+                    "type": "state",
+                    "name": "drop all",
+                    "value": false
+                },
+                {
+                    "type": "state",
+                    "name": "drop all inventory",
+                    "value": false
+                }
+            ]
+        },
+        {
+            "name": "trails",
+            "active": false,
+            "bind": {
+                "active": false,
+                "position": {
+                    "x": 0,
+                    "y": 0
+                }
+            },
+            "settings": [
+                {
+                    "type": "text-field",
+                    "name": "trail color",
+                    "value": "#FF0000"
+                },
+                {
+                    "type": "slider",
+                    "name": "distance",
+                    "value": 1
+                },
+                {
+                    "type": "slider",
+                    "name": "line color red",
+                    "value": 255
+                },
+                {
+                    "type": "slider",
+                    "name": "line color green",
+                    "value": 150
+                },
+                {
+                    "type": "slider",
+                    "name": "line color blue",
+                    "value": 0
+                }
+            ]
+        },
+        {
+            "name": "trails",
+            "active": false,
+            "bind": {
+                "active": false,
+                "position": {
+                    "x": 0,
+                    "y": 0
+                }
+            },
+            "settings": [
+                {
+                    "type": "text-field",
+                    "name": "trail color",
+                    "value": "#FF0000"
+                },
+                {
+                    "type": "text-field",
+                    "name": "radius",
+                    "value": ""
+                },
+                {
+                    "type": "text-field",
+                    "name": "id",
+                    "value": ""
+                }
+            ]
+        },
+        {
+            "name": "xray",
+            "active": false,
+            "bind": {
+                "active": false,
+                "position": {
+                    "x": 0,
+                    "y": 0
+                }
+            },
+            "settings": [
+                {
+                    "type": "text-field",
+                    "name": "block id",
+                    "value": ""
+                },
+                {
+                    "type": "text-field",
+                    "name": "radius",
+                    "value": ""
+                },
+                {
+                    "type": "state",
+                    "name": "xray top 1 mira",
+                    "value": false
+                },
+                {
+                    "type": "slider",
+                    "name": "pitch",
+                    "value": 20
+                },
+                {
+                    "type": "slider",
+                    "name": "line width",
+                    "value": 5
+                },
+                {
+                    "type": "slider",
+                    "name": "line color red",
+                    "value": 255
+                },
+                {
+                    "type": "slider",
+                    "name": "line color green",
+                    "value": 150
+                },
+                {
+                    "type": "slider",
+                    "name": "line color blue",
+                    "value": 0
+                }
+            ]
+        },
+        {
+            "name": "aimskiill",
+            "active": false,
+            "bind": {
+                "active": false,
+                "position": {
+                    "x": 0,
+                    "y": 0
+                }
+            },
+            "settings": [
+                {
+                    "type": "slider",
+                    "name": "distance",
+                    "value": 1
+                },
+                {
+                    "type": "slider",
+                    "name": "cps",
+                    "value": 5
+                }
+            ]
+        },
+        {
+            "name": "bot",
+            "active": false,
+            "bind": {
+                "active": false,
+                "position": {
+                    "x": 0,
+                    "y": 0
+                }
+            }
+        },
+        {
+            "name": "mpg",
+            "active": false,
+            "bind": {
+                "active": false,
+                "position": {
+                    "x": 0,
+                    "y": 0
+                }
+            },
+            "settings": [
+                {
+                    "type": "slider",
+                    "name": "distance",
+                    "value": 1
+                }
+            ]
+        },
+        {
+            "name": "anticheat",
+            "active": false,
+            "bind": {
+                "active": false,
+                "position": {
+                    "x": 0,
+                    "y": 0
+                }
+            }
+        },
+        {
+            "name": "hitsound",
+            "active": false,
+            "bind": {
+                "active": false,
+                "position": {
+                    "x": 0,
+                    "y": 0
+                }
+            }
+        },
+        {
+            "name": "stereosound",
+            "active": false,
+            "bind": {
+                "active": false,
+                "position": {
+                    "x": 0,
+                    "y": 0
+                }
+            }
+        },
+        {
+            "name": "spammertop",
+            "active": false,
+            "bind": {
+                "active": false,
+                "position": {
+                    "x": 0,
+                    "y": 0
+                }
+            },
+            "settings": [
+                {
+                    "type": "slider",
+                    "name": "speed",
+                    "value": 70
+                }
+            ]
+        },
+        {
+            "name": "circle target",
+            "active": false,
+            "bind": {
+                "active": false,
+                "position": {
+                    "x": 0,
+                    "y": 0
+                }
+            },
+            "settings": [
+                {
+                    "type": "slider",
+                    "name": "radius",
+                    "value": 1
+                },
+                {
+                    "type": "slider",
+                    "name": "segments",
+                    "value": 10
+                },
+                {
+                    "type": "slider",
+                    "name": "fade speed",
+                    "value": 30
+                },
+                {
+                    "type": "slider",
+                    "name": "y",
+                    "value": 0.48
+                },
+                {
+                    "type": "slider",
+                    "name": "y speed",
+                    "value": 0.7
+                },
+                {
+                    "type": "slider",
+                    "name": "y time",
+                    "value": 500
+                },
+                {
+                    "type": "slider",
+                    "name": "width",
+                    "value": 2.5
+                }
+            ]
+        },
+        {
+            "name": "scaffoldd",
+            "active": false,
+            "bind": {
+                "active": false,
+                "position": {
+                    "x": 0,
+                    "y": 0
+                }
+            },
+            "settings": [
+                {
+                    "type": "slider",
+                    "name": "в воздухе",
+                    "value": 20
+                },
+                {
+                    "type": "slider",
+                    "name": "на земле",
+                    "value": 200
+                }
+            ]
+        },
+        {
+            "name": "scaff",
+            "active": false,
+            "bind": {
+                "active": false,
+                "position": {
+                    "x": 0,
+                    "y": 0
+                }
+            },
+            "settings": [
+                {
+                    "type": "slider",
+                    "name": "speed",
+                    "value": 1
+                }
+            ]
+        },
+        {
+            "name": "chatbot",
+            "active": false,
+            "bind": {
+                "active": false,
+                "position": {
+                    "x": 0,
+                    "y": 0
+                }
+            }
+        },
+        {
+            "name": "fps",
+            "active": false,
+            "bind": {
+                "active": false,
+                "position": {
+                    "x": 0,
+                    "y": 0
+                }
+            }
+        },
+        {
+            "name": "render",
+            "active": false,
+            "bind": {
+                "active": false,
+                "position": {
+                    "x": 0,
+                    "y": 0
+                }
+            }
+        },
+        {
+            "name": "beddestroyer",
+            "active": false,
+            "bind": {
+                "active": false,
+                "position": {
+                    "x": 0,
+                    "y": 0
+                }
+            },
+            "settings": [
+                {
+                    "type": "slider",
+                    "name": "radar",
+                    "value": 1
+                }
+            ]
+        },
+        {
+            "name": "dupe",
+            "active": false,
+            "bind": {
+                "active": false,
+                "position": {
+                    "x": 0,
+                    "y": 0
+                }
+            }
+        },
+        {
+            "name": "modulelist",
+            "active": true,
+            "bind": {
+                "active": false,
+                "position": {
+                    "x": 0,
+                    "y": 0
+                }
+            },
+            "settings": [
+                {
+                    "type": "mode",
+                    "name": "mode",
+                    "value": "Rainbow"
+                },
+                {
+                    "type": "mode",
+                    "name": "mode background",
+                    "value": "Прозрачно Чёрный"
+                },
+                {
+                    "type": "slider",
+                    "name": "size",
+                    "value": 0.6
+                },
+                {
+                    "type": "slider",
+                    "name": "distance between elements",
+                    "value": 5
+                },
+                {
+                    "type": "slider",
+                    "name": "color limitation",
+                    "value": 180
+                },
+                {
+                    "type": "slider",
+                    "name": "length",
+                    "value": 500
+                },
+                {
+                    "type": "slider",
+                    "name": "speed",
+                    "value": 20
+                }
+            ]
+        },
+        {
+            "name": "nodamagefall",
+            "active": false,
+            "bind": {
+                "active": false,
+                "position": {
+                    "x": 0,
+                    "y": 0
+                }
+            }
+        },
+        {
+            "name": "scaffoldhelper",
+            "active": false,
+            "bind": {
+                "active": false,
+                "position": {
+                    "x": 0,
+                    "y": 0
+                }
+            },
+            "settings": [
+                {
+                    "type": "slider",
+                    "name": "fallspeed",
+                    "value": 0.3
+                },
+                {
+                    "type": "state",
+                    "name": "rotation",
+                    "value": true
+                },
+                {
+                    "type": "state",
+                    "name": "stopsprint",
+                    "value": true
+                },
+                {
+                    "type": "state",
+                    "name": "motioncamera",
+                    "value": true
+                }
+            ]
+        },
+        {
+            "name": "killaura-best",
+            "active": false,
+            "bind": {
+                "active": true,
+                "position": {
+                    "x": 463,
+                    "y": -366
+                }
+            },
+            "settings": [
+                {
+                    "type": "mode",
+                    "name": "mode",
+                    "value": "Target"
+                },
+                {
+                    "type": "slider",
+                    "name": "cps",
+                    "value": 5
+                },
+                {
+                    "type": "slider",
+                    "name": "distance",
+                    "value": 5
+                }
+            ]
+        },
+        {
+            "name": "esp",
+            "active": false,
+            "bind": {
+                "active": false,
+                "position": {
+                    "x": 0,
+                    "y": 0
+                }
+            }
+        },
+        {
+            "name": "qnotifications",
+            "active": false,
+            "bind": {
+                "active": false,
+                "position": {
+                    "x": 0,
+                    "y": 0
+                }
+            }
+        },
+        {
+            "name": "damagefly",
+            "active": false,
+            "bind": {
+                "active": false,
+                "position": {
+                    "x": 0,
+                    "y": 0
+                }
+            },
+            "settings": [
+                {
+                    "type": "slider",
+                    "name": "velocity",
+                    "value": 0.3
+                },
+                {
+                    "type": "state",
+                    "name": "with perl",
+                    "value": false
+                }
+            ]
+        }
+    ]
+}

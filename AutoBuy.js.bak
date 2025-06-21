@@ -1,0 +1,14 @@
+const module = new Module("LongHopS3", true, true, ModuleCategory.MOVEMENT);
+
+function onLevelTick() {
+if (module.isActive()) {
+if (Module.isActive("ChestStealer") {
+let slider = Setting.getCurrentValue("ChestStealer", "Loot delay");
+
+function onScriptEnabled() {
+    ModuleManager.addModule(module);
+}
+
+function onScriptDisabled() {
+    ModuleManager.removeModule(module);
+}

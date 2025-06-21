@@ -1,0 +1,13 @@
+const module = new Module("Cheker", false, false, ModuleCategory.MOVEMENT);
+var button = new ButtonSetting("Отправить", function(view) {
+print(getScreenName());
+});
+module.addSettings([button]);
+
+function onScriptEnabled() {
+    ModuleManager.addModule(module);
+}
+
+function onScriptDisabled() {
+    ModuleManager.removeModule(module);
+}
